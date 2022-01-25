@@ -89,7 +89,7 @@ def disegna_oggetti():
 
 
 def hai_perso():
-    SCHERMO.blit(game_over, (50,180))
+    #SCHERMO.blit(game_over, (50,180))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
