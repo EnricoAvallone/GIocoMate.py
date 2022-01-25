@@ -17,7 +17,7 @@ all_enemies = pygame.sprite.Group()
 sfondo = pygame.image.load("base.png")
 uccello = pygame.image.load("uccello.png")
 base = pygame.image.load("sfondo_luna.png")
-game_over = pygame.image.load("uccello.png")
+#game_over = pygame.image.load("uccello.png")
 
 
 
@@ -88,7 +88,7 @@ def disegna_oggetti():
 
 
 def hai_perso():
-    SCHERMO.blit(game_over, (50,180))
+    #SCHERMO.blit(game_over, (50,180))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
