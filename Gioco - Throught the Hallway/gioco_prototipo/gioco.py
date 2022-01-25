@@ -21,7 +21,6 @@ game_over = pygame.image.load("uccello.png")
 
 
 
-
 clk = pygame.time.Clock()
 
 
