@@ -26,7 +26,7 @@ clk = pygame.time.Clock()
 
 
 #Costanti globali
-SCHERMO = pygame.display.set_mode((512,288))
+SCHERMO = pygame.display.set_mode((700,400))
 FPS = 50
 VEL_AVANZ = 5
 
