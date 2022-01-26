@@ -34,26 +34,20 @@ VEL_AVANZ = 5
 
 def inizializza():
     
-    global all_sprites, all_enemies, set_timer, clock, firerate, proiettili_dict, n, salto, gravity, yinizio
-    global uccellox, uccelloy, uccello_vely, uccello_volo
+    global all_sprites, all_enemies, clock, proiettili_dict, n, salto, gravity, yinizio
+    global uccellox, uccelloy
     global basex, sfondox
-    global pro_x, pro_y, lancio, nemico, rimuovi, allsprites, allenemies
+    global  nemico, allsprites
     uccellox, uccelloy = 60,150
-    uccello_vely = 0
-    uccello_volo = 2
     basex = 0
     sfondox = 0
-    pro_x=500
     proiettili_dict = {}
     nemico = False
-    rimuovi = False
     salto = False
     allsprites= "vuoto"
-    allenemies = "vuoto"
     all_sprites.empty()
     pygame.time.set_timer(pygame.USEREVENT, 1000)
     clock = 0
-    firerate = 0
     n= 0
     gravity=7
     yinizio=[]
