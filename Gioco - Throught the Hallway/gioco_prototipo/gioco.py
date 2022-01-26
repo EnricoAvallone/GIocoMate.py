@@ -14,7 +14,7 @@ random.seed()
 all_sprites = pygame.sprite.Group()
 all_enemies = pygame.sprite.Group()
 
-sfondo = pygame.image.load("base.png")
+sfondo = pygame.image.load("basecorriodio.png")
 uccello = pygame.image.load("uccello.png")
 base = pygame.image.load("sfondo_luna.png")
 #game_over = pygame.image.load("uccello.png")
@@ -68,7 +68,7 @@ def aggiorna():
 
 def disegna_oggetti():
     SCHERMO.blit(base, (basex,-1550))
-    SCHERMO.blit(sfondo, (sfondox,260))
+    SCHERMO.blit(sfondo, (sfondox,0))
     SCHERMO.blit(uccello, (60,uccelloy))
     if allsprites == "vuoto":
         all_sprites.empty()
@@ -107,23 +107,23 @@ inizializza()
 while True:
     basex -= VEL_AVANZ
     sfondox -= VEL_AVANZ
-    if sfondox < -2048: sfondox = 0
+    if sfondox < -0: sfondox = 0
     if basex < -3328: basex = 0
     keys=pygame.key.get_pressed()
 
     
 
-    if uccelloy == 250:
-        gravity = 250
+    if uccelloy == 320:
+        gravity = 320
         uccelloy = gravity
-    elif uccelloy < 250: 
+    elif uccelloy < 320: 
         uccelloy += gravity
-        gravity = 6
+        gravity = 8
     
     
 
 
-    if keys[K_SPACE] and uccelloy > 249:
+    if keys[K_SPACE] and uccelloy > 319:
         salto =True
         
         
@@ -131,11 +131,11 @@ while True:
         
     if salto == True:
 
-        if uccelloy > 170:
-            gravity = -6
+        if uccelloy > 240:
+            gravity = -7
             uccelloy += gravity
         else:
-            gravity = 7
+            gravity = 8
             salto = False
         yinizio.clear()
 
