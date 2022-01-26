@@ -2,7 +2,7 @@
 # Gioco: _Through the Hallway_
 ###### __Avallone Enrico; Ippolito Gabriele; Lastrucci Davide__
 
-***
+
 ***
 ## Indice
 1. [Scopo del gioco](#Scopo-del-gioco:)
@@ -15,7 +15,7 @@
 
 
 
-***
+
 ***
 ## Scopo del gioco: 
     Eliminare i nemici e resistere più tempo possibile
@@ -48,12 +48,11 @@
 * ##### __Amico drone:__ 
   arriva un drone che ti aiuta nell’eliminazione dei nemici per 10 secondi
 ***
-***
-***
+
 
 # Utilizzo coniche
 
-***
+
 
 ## Retta: 
  * __Traiettoria dei proiettili__
@@ -88,6 +87,6 @@
 * __Scudo__
 (il power up dello scudo eliminerà tutti quei colpi che raggiungeranno le coordinate della circonferenza che ha per centro le coordinate del personaggio)
 
-***
-***
+
+
 ***
