@@ -5,12 +5,12 @@
 
 ***
 ## Indice
-1. [Scopo del gioco](#Scopo-del-gioco:)
-2. [Trama](#Trama:)
-3. [Svolgimento del gioco](#Svolgimento-del-gioco:)
-4. [Comandi di gioco](#Comandi-di-gioco:)
-4. [Power-up](#Power-up:)
-5. [Utilizzo coniche](#Utilizzo-coniche:)
+1. [Scopo del gioco](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#scopo-del-gioco)
+2. [Trama](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#trama)
+3. [Svolgimento del gioco](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#svolgimento-del-gioco)
+4. [Comandi di gioco](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#comandi-di-gioco)
+4. [Power-up](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#power-up)
+5. [Utilizzo coniche](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#utilizzo-coniche)
 
 </br>
 </br>
@@ -59,6 +59,7 @@
   arriva un drone che ti aiuta nell’eliminazione dei nemici per 10 secondi
 </br>
 </br>
+
 ***
 
 </br></br></br>
