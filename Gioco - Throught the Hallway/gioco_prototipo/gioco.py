@@ -6,7 +6,7 @@ import os
 from pygame.constants import K_0, K_DOWN, K_LEFT, K_RIGHT, K_SPACE, K_UP, KEYDOWN, KEYUP, K_a, K_d, K_s, K_w
 from pygame.time import Clock
 
-os.chdir ("Gioco - Throught the Hallway/gioco_prototipo")
+os.chdir ("GiocoMate.py/Gioco - Throught the Hallway/gioco_prototipo")
 
 pygame.init()
 random.seed()
@@ -118,7 +118,7 @@ while True:
         uccelloy = gravity
     elif uccelloy < 250: 
         uccelloy += gravity
-        gravity = 6
+        gravity = 7
     
     
 
