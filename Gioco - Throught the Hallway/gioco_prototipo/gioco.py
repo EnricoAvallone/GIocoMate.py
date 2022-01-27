@@ -160,14 +160,14 @@ while True:
 
         if event.type == pygame.USEREVENT: 
             clock += 1
-            if clock == 5:
+            if clock == 10:
                 clock= 0
                 nemico = True
                 spr_ghost = pygame.sprite.Sprite(all_enemies)
                 spr_ghost.image = pygame.image.load("uccello.png")
                 spr_ghost.rect = spr_ghost.image.get_rect()
                 
-                spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(0, 288))
+                spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(200, 320))
                 
     
     
