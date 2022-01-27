@@ -14,9 +14,9 @@ random.seed()
 all_sprites = pygame.sprite.Group()
 all_enemies = pygame.sprite.Group()
 
-sfondo = pygame.image.load("basecorriodio.png")
+sfondo = pygame.image.load("sfondo_luna.png")
 uccello = pygame.image.load("uccello.png")
-base = pygame.image.load("sfondo_luna.png")
+base = pygame.image.load("basecorriodio.png")
 #game_over = pygame.image.load("uccello.png")
 
 
@@ -61,8 +61,8 @@ def aggiorna():
     pygame.time.Clock().tick(FPS)
 
 def disegna_oggetti():
-    SCHERMO.blit(base, (basex,-1550))
-    SCHERMO.blit(sfondo, (sfondox,0))
+    SCHERMO.blit(sfondo, (sfondox,-1550))
+    SCHERMO.blit(base, (basex,0))
     SCHERMO.blit(uccello, (60,uccelloy))
     if allsprites == "vuoto":
         all_sprites.empty()
@@ -101,8 +101,8 @@ inizializza()
 while True:
     basex -= VEL_AVANZ
     sfondox -= VEL_AVANZ
-    if sfondox < -0: sfondox = 0
-    if basex < -3328: basex = 0
+    if sfondox < -3328: sfondox = 0
+    if basex < -0: basex = 0
     keys=pygame.key.get_pressed()
 
     
