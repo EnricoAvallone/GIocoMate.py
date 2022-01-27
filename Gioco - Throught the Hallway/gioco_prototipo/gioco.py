@@ -76,7 +76,7 @@ def disegna_oggetti():
     else:
         all_enemies.draw(SCHERMO)
 
-                    
+    
     
     
 
