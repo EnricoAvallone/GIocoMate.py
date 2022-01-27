@@ -132,17 +132,11 @@ while True:
             orologio_j = True
             if uccelloy == 0:
                 uccelloy = 0
-            elif uccelloy > 0:
+            if uccelloy > 0:
                 gravity =-5
                 uccelloy += gravity
                  
-        else:
-            if clock_jetpack == 10:
-                orologio_j = False
-                clock_jetpack= 0
-            else:
-                orologio_j = True
-                pass
+            
         
     if salto == True:
 
@@ -198,6 +192,9 @@ while True:
             clock_nemici += 1
             if orologio_j == True:
                 clock_jetpack += 1
+                if clock_jetpack == 10:
+                    clock_jetpack = 0
+                    orologio_j = False
 
 
             
