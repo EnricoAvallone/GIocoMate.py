@@ -1,6 +1,6 @@
 
 # Gioco: _Through the Hallway_
-###### [___Avallone Enrico___](https://github.com/EnricoAvallone); [___Ippolito Gabriele___](https://github.com/gabrielecoding); [___Lastrucci Davide___](https://github.com/davidelastrucci)
+#### [___Avallone Enrico___](https://github.com/EnricoAvallone); [___Ippolito Gabriele___](https://github.com/gabrielecoding); [___Lastrucci Davide___](https://github.com/davidelastrucci)
 
 
 ***
