@@ -34,21 +34,25 @@ VEL_AVANZ = 5
 
 def inizializza():
     
-    global all_sprites, all_enemies, clock, proiettili_dict, n, salto, gravity, yinizio
+    global all_sprites, all_enemies, clock, proiettili_dict, nemici_dict, n_P ,n_N , salto, gravity, yinizio
     global uccellox, uccelloy
     global basex, sfondox
-    global  nemico, allsprites
+    global  nemico, allsprites, allenemies
     uccellox, uccelloy = 60,150
     basex = 0
     sfondox = 0
     proiettili_dict = {}
+    nemici_dict = {}
     nemico = False
     salto = False
     allsprites= "vuoto"
+    allenemies= ""
     all_sprites.empty()
+    all_enemies.empty()
     pygame.time.set_timer(pygame.USEREVENT, 1000)
     clock = 0
-    n= 0
+    n_P= 0
+    n_N= 0
     gravity=7
     yinizio=[]
 
@@ -69,12 +73,8 @@ def disegna_oggetti():
         pass
     else:
         all_sprites.draw(SCHERMO)
-
-    if nemico == False:
-        all_enemies.empty()
-        pass
-    else:
-        all_enemies.draw(SCHERMO)
+    
+    all_enemies.draw(SCHERMO)
 
                     
     
@@ -142,8 +142,8 @@ while True:
        
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
 
-            n += 1
-            n_proiettile= (n)
+            n_P += 1
+            n_proiettile= (n_P)
             spr_proiettile = pygame.sprite.Sprite(all_sprites)
             spr_proiettile.image = pygame.image.load("proiettile.png")
             spr_proiettile.rect = spr_proiettile.image.get_rect()
@@ -160,29 +160,44 @@ while True:
 
         if event.type == pygame.USEREVENT: 
             clock += 1
-            if clock == 10:
-                clock= 0
-                nemico = True
+            if clock == 2:
+
+                #n_N += 1
+                n_nemico= (n_N)
                 spr_ghost = pygame.sprite.Sprite(all_enemies)
                 spr_ghost.image = pygame.image.load("uccello.png")
                 spr_ghost.rect = spr_ghost.image.get_rect()
-                
                 spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(200, 320))
+
+                nemici_dict.update({n_nemico: spr_ghost})
+
+                #clock= 0
+
                 
     
-    
+                
     
     for i in proiettili_dict:
+ 
         proiettile_attivo = proiettili_dict[i]
+
+        if spr_ghost.alive()== True:
+            if pygame.sprite.spritecollide(spr_ghost, all_sprites, True):
+                spr_ghost.kill()
+            else:
+                pass
+        else:
+            pass
+
         if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
             proiettile_attivo.rect.x += 30
-            
+                    
         else:
             allsprites = "vuoto"
 
 
-        
+   
 
 
         
