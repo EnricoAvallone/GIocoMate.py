@@ -34,10 +34,11 @@ VEL_AVANZ = 5
 
 def inizializza():
     
-    global all_sprites, all_enemies, clock, proiettili_dict, nemici_dict, n_P ,n_N , salto, gravity, yinizio
+    global all_sprites, all_enemies, proiettili_dict, nemici_dict, n_P ,n_N , salto, gravity, yinizio
     global uccellox, uccelloy
     global basex, sfondox
     global  nemico, allsprites, allenemies
+    global clock_nemici, clock_jetpack, orologio_j
     uccellox, uccelloy = 60,150
     basex = 0
     sfondox = 0
@@ -50,7 +51,9 @@ def inizializza():
     all_sprites.empty()
     all_enemies.empty()
     pygame.time.set_timer(pygame.USEREVENT, 1000)
-    clock = 0
+    clock_nemici = 0
+    clock_jetpack = 0
+    orologio_j = False
     n_P= 0
     n_N= 0
     gravity=7
@@ -119,9 +122,27 @@ while True:
 
     if keys[K_SPACE] and uccelloy > 319:
         salto =True
-        
-        
     
+    
+
+        
+    if keys[K_j]:
+    
+        if clock_jetpack < 3:
+            orologio_j = True
+            if uccelloy == 0:
+                uccelloy = 0
+            elif uccelloy > 0:
+                gravity =-5
+                uccelloy += gravity
+                 
+        else:
+            if clock_jetpack == 10:
+                orologio_j = False
+                clock_jetpack= 0
+            else:
+                orologio_j = True
+                pass
         
     if salto == True:
 
@@ -132,6 +153,21 @@ while True:
             gravity = 8
             salto = False
         yinizio.clear()
+
+
+    if clock_nemici == 5:
+        clock_nemici= 0
+        n_N += 1
+        n_nemico= (n_N)
+        spr_ghost = pygame.sprite.Sprite(all_enemies)
+        spr_ghost.image = pygame.image.load("uccello.png")
+        spr_ghost.rect = spr_ghost.image.get_rect()
+        spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(240, 320))
+
+        nemici_dict.update({n_nemico: spr_ghost})
+    else:
+        pass
+
 
     
     
@@ -159,21 +195,15 @@ while True:
                 pygame.quit()
 
         if event.type == pygame.USEREVENT: 
-            clock += 1
-            if clock == 5:
+            clock_nemici += 1
+            if orologio_j == True:
+                clock_jetpack += 1
 
-                n_N += 1
-                n_nemico= (n_N)
-                spr_ghost = pygame.sprite.Sprite(all_enemies)
-                spr_ghost.image = pygame.image.load("uccello.png")
-                spr_ghost.rect = spr_ghost.image.get_rect()
-                spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(200, 320))
 
-                nemici_dict.update({n_nemico: spr_ghost})
+            
 
-                clock= 0
 
-                
+                   
     
                 
     
