@@ -160,9 +160,9 @@ while True:
 
         if event.type == pygame.USEREVENT: 
             clock += 1
-            if clock == 2:
+            if clock == 5:
 
-                #n_N += 1
+                n_N += 1
                 n_nemico= (n_N)
                 spr_ghost = pygame.sprite.Sprite(all_enemies)
                 spr_ghost.image = pygame.image.load("uccello.png")
@@ -171,7 +171,7 @@ while True:
 
                 nemici_dict.update({n_nemico: spr_ghost})
 
-                #clock= 0
+                clock= 0
 
                 
     
@@ -180,14 +180,16 @@ while True:
     for i in proiettili_dict:
  
         proiettile_attivo = proiettili_dict[i]
-
-        if spr_ghost.alive()== True:
-            if pygame.sprite.spritecollide(spr_ghost, all_sprites, True):
-                spr_ghost.kill()
+        for a in nemici_dict:
+            nemico_attivo = nemici_dict[a]
+            if nemico_attivo.alive()== True:
+                nemico_attivo = nemici_dict[a]
+                if pygame.sprite.spritecollide(nemico_attivo, all_sprites, True):
+                    nemico_attivo.kill()
+                else:
+                    pass
             else:
                 pass
-        else:
-            pass
 
         if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
