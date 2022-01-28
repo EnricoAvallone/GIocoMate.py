@@ -16,7 +16,7 @@ all_enemies = pygame.sprite.Group()
 
 sfondo = pygame.image.load("sfondo_luna.png")
 uccello = pygame.image.load("uccello.png")
-base = pygame.image.load("basecorriodio.png")
+base = pygame.image.load("base_corridoio.png")
 #game_over = pygame.image.load("uccello.png")
 
 
@@ -105,7 +105,7 @@ while True:
     basex -= VEL_AVANZ
     sfondox -= VEL_AVANZ
     if sfondox < -3328: sfondox = 0
-    if basex < -0: basex = 0
+    if basex < -2800: basex = 0
     keys=pygame.key.get_pressed()
 
     
