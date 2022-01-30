@@ -18,7 +18,6 @@ class retta:
             return f"\nl'equazione in forma implicita è: \n {self.__a}x + {self.__b}y + {self.__c} = 0"
 
     def esplicita(self):
-        l = -self.__c / self.__b
         if self.__b == 0:
             return f"\nl'equazione non può essere scritta in forma esplicita"
         elif self.__a == 0:
@@ -26,10 +25,7 @@ class retta:
         elif self.__c == 0:
             return f"\nl'equazione in forma esplicita è: \n y = {-self.__a  / self.__b}x" 
         else:
-            if l > 0:
-                return f"\nl'equazione in forma esplicita è: \n y = {-self.__a  / self.__b}x + {-self.__c / self.__b}"
-            else:
-                return f"\nl'equazione in forma esplicita è: \n y = {-self.__a  / self.__b}x {-self.__c / self.__b}"
+            return f"\nl'equazione in forma esplicita è: \n y = {-self.__a  / self.__b}x + {-self.__c / self.__b}"
 
     def getA(self):
         return self.__a
@@ -76,7 +72,7 @@ class retta:
                 tupla = (x1, (-self.__a * x1) / self.__b + (-self.__c / self.__b))
                 x1 = x1 + 1
                 self.__punti.append(tupla)
-                print("\nl'output di questa funzione è una tupla contenente le cordinate di tutti i punti della retta data")
+            print("\nl'output di questa funzione è una tupla contenente le cordinate di tutti i punti della retta data")
             return self.__punti
 
     def punti_intersezione(self, a2, b2, c2):

@@ -62,6 +62,11 @@ def inizializza():
     clock_nemici = 0
     clock_jetpack = 0
     orologio_j = False
+    #__a = 0
+    #__b = 0
+    #__c = 0
+    #__x = uccellox
+    #__y = uccelloy
     n_P= 0
     nemici_n_P = 0
     n_N= 0
@@ -220,8 +225,10 @@ while True:
             spr_proiettile = pygame.sprite.Sprite(all_sprites)
             spr_proiettile.image = pygame.image.load("proiettile.png")
             spr_proiettile.rect = spr_proiettile.image.get_rect()
-            spr_proiettile.rect.topright = (uccellox, uccelloy)
+            
+            
 
+            spr_proiettile.rect.topright = (uccellox, uccelloy)
             proiettili_dict.update({n_proiettile: spr_proiettile})
 
 
