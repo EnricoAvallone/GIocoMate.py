@@ -23,6 +23,8 @@ game_over = pygame.image.load("game_over.png")
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
 
+pygame.mixer.music.load("sparo.mp3")
+
 
 clk = pygame.time.Clock()
 
@@ -37,12 +39,19 @@ VEL_AVANZ = 9
 
 def inizializza():
     
-    global all_sprites, all_enemies, proiettili_dict, nemici_dict, n_P ,n_N , salto, gravity, yinizio
-    global uccellox, uccelloy
+    #global uccello
+    global uccellox, uccelloy, proiettili_dict, salto, gravity
+    #global sfondo
     global basex, sfondox
-    global  nemico, allsprites, allenemies
+    #global nemici 
+    global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies
+    #global orologi
     global clock_nemici, clock_jetpack, orologio_j
-    global nemici_n_P, nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, nemici_proiettile_attivo
+    #global proiettili nemici
+    global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
+    #global proiettili amici
+    global n_P, all_sprites
+    
     uccellox, uccelloy = 60,150
     basex = 0
     sfondox = 0
@@ -54,10 +63,12 @@ def inizializza():
     allsprites= "vuoto"
     nemici_allsprites = "vuoto"
     allenemies= ""
-    
     all_sprites.empty()
     all_enemies.empty()
     proiettili_all_enemies.empty()
+    nemici_proiettili_dict.clear()
+    nemici_dict.clear()
+    proiettili_dict.clear()
     pygame.time.set_timer(pygame.USEREVENT, 1000)
     clock_nemici = 0
     clock_jetpack = 0
@@ -68,12 +79,11 @@ def inizializza():
     #__x = uccellox
     #__y = uccelloy
     n_P= 0
-    nemici_n_P = 0
     n_N= 0
     gravity=7
-    yinizio=[]
     nemici_firerate = 0
     sparo_nemici = False
+    nemici_n_proiettile= 0
     aggiorna()
     
 
@@ -174,19 +184,18 @@ while True:
         else:
             gravity = 8
             salto = False
-        yinizio.clear()
+    
 
 
     if clock_nemici == 5:
         clock_nemici= 0
         n_N += 1
-        n_nemico= (n_N)
         spr_ghost = pygame.sprite.Sprite(all_enemies)
         spr_ghost.image = pygame.image.load("uccello.png")
         spr_ghost.rect = spr_ghost.image.get_rect()
         spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(240, 320))
 
-        nemici_dict.update({n_nemico: spr_ghost})
+        nemici_dict.update({n_N: spr_ghost})
         
     else:
         pass
@@ -200,7 +209,7 @@ while True:
         for b in nemici_dict:
             nemico_attivo = nemici_dict[b]
             if nemico_attivo.alive() == True:
-                nemici_n_proiettile= b
+                nemici_n_proiettile += 1
                 spr_proiettile = pygame.sprite.Sprite(proiettili_all_enemies)
                 spr_proiettile.image = pygame.image.load("proiettile.png")
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
@@ -219,9 +228,8 @@ while True:
         
        
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
-
+            pygame.mixer.music.play(1, 0)
             n_P += 1
-            n_proiettile= (n_P)
             spr_proiettile = pygame.sprite.Sprite(all_sprites)
             spr_proiettile.image = pygame.image.load("proiettile.png")
             spr_proiettile.rect = spr_proiettile.image.get_rect()
@@ -229,7 +237,7 @@ while True:
             
 
             spr_proiettile.rect.topright = (uccellox, uccelloy)
-            proiettili_dict.update({n_proiettile: spr_proiettile})
+            proiettili_dict.update({n_P: spr_proiettile})
 
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
@@ -251,26 +259,29 @@ while True:
 
     
 
-    
-    for n in nemici_proiettili_dict:
+    if nemici_proiettili_dict:
+        for n in nemici_proiettili_dict:
  
-        nemici_proiettile_attivo = nemici_proiettili_dict[n]
+            nemici_proiettile_attivo = nemici_proiettili_dict[n]
 
 
-        if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
-            hai_perso()
-                
-        else:
-            pass
+        
 
 
-        if nemici_proiettile_attivo.rect.x > 0:
-            nemici_allsprites = "pieno"
-            nemici_proiettile_attivo.rect.x -= 15
+            if nemici_proiettile_attivo.rect.x > 0:
+                nemici_allsprites = "pieno"
+                nemici_proiettile_attivo.rect.x -= 15
         
                     
-        else:
-            nemici_allsprites = "vuoto"      
+            else:
+                nemici_allsprites = "vuoto"
+            
+            if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
+                
+                hai_perso()
+                
+            else:
+                pass      
     
                 
     
