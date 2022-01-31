@@ -56,7 +56,7 @@ def inizializza():
     #global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     #global proiettili amici
-    global n_P, all_sprites
+    global n_P, all_sprites, punti_dict, traiettoria, n_list
     
     tempo = 0
     uccellox, uccelloy = 60,150
@@ -80,17 +80,15 @@ def inizializza():
     clock_nemici = 0
     clock_jetpack = 0
     orologio_j = False
-    #__a = 0
-    #__b = 0
-    #__c = 0
-    #__x = uccellox
-    #__y = uccelloy
     n_P= 0
     n_N= 0
     gravity=7
     nemici_firerate = 0
     sparo_nemici = False
     nemici_n_proiettile= 0
+    n_list = 0
+    punti_dict = {}
+    traiettoria = uccellox
     aggiorna()
     
 
@@ -177,7 +175,8 @@ while True:
     if keys[K_SPACE] and uccelloy > 319:
         salto =True
     
-    
+    if keys[K_q]:
+        pygame.quit()
 
         
     if keys[K_j]:
@@ -252,7 +251,16 @@ while True:
             spr_proiettile.image = pygame.image.load("proiettile.png")
             spr_proiettile.rect = spr_proiettile.image.get_rect()
             
-            
+            for i in range(700):
+                n_list += 1
+                traiettoria += 1
+                tupla = [traiettoria , uccelloy]
+                punti_dict.update({n_list: tupla})
+
+            print(punti_dict)
+            traiettoria = uccellox
+            punti_dict.clear()
+            n_list = 0
 
             spr_proiettile.rect.topright = (uccellox, uccelloy)
             proiettili_dict.update({n_P: spr_proiettile})
