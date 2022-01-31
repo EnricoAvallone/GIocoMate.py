@@ -23,8 +23,6 @@ game_over = pygame.image.load("game_over.png")
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
 
-pygame.mixer.music.load("sparo.mp3")
-
 
 clk = pygame.time.Clock()
 
@@ -124,6 +122,8 @@ def disegna_oggetti():
 
 
 def hai_perso():
+    pygame.mixer.music.load("sus.mp3")
+    pygame.mixer.music.play(1, 0)
     SCHERMO.blit(game_over, (0,0))
     aggiorna()
     ricominciamo = False
@@ -228,6 +228,8 @@ while True:
         
        
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
+            
+            pygame.mixer.music.load("sparo.mp3")
             pygame.mixer.music.play(1, 0)
             n_P += 1
             spr_proiettile = pygame.sprite.Sprite(all_sprites)
@@ -284,7 +286,7 @@ while True:
                 pass      
     
                 
-    
+     
     for i in proiettili_dict:
  
         proiettile_attivo = proiettili_dict[i]
