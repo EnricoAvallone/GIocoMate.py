@@ -1,3 +1,4 @@
+from time import time
 import pygame
 from pygame.locals import *
 import random
@@ -23,6 +24,13 @@ game_over = pygame.image.load("game_over.png")
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
 
+fnt = pygame.font.SysFont("Times New Roman", 40)
+
+
+
+
+
+
 
 clk = pygame.time.Clock()
 
@@ -44,12 +52,13 @@ def inizializza():
     #global nemici 
     global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies
     #global orologi
-    global clock_nemici, clock_jetpack, orologio_j
+    global clock_nemici, clock_jetpack, orologio_j,tempo
     #global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     #global proiettili amici
     global n_P, all_sprites
     
+    tempo = 0
     uccellox, uccelloy = 60,150
     basex = 0
     sfondox = 0
@@ -96,7 +105,7 @@ def aggiorna():
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1550))
     SCHERMO.blit(base, (basex,0))
-    
+    SCHERMO.blit(surf_text, (650, 10))
     uccello.rect = uccello.image.get_rect()
     uccello.rect.topright = ( 60 , uccelloy)
     personaggio.draw(SCHERMO)
@@ -145,6 +154,9 @@ while True:
     sfondox -= VEL_AVANZ
     if sfondox < -3328: sfondox = 0
     if basex < -2800: basex = 0
+    surf_text = fnt.render(str(tempo), True, (255, 255, 0))
+
+
     keys=pygame.key.get_pressed()
     
 
@@ -249,6 +261,7 @@ while True:
                 pygame.quit()
 
         if event.type == pygame.USEREVENT: 
+            tempo+=1
             clock_nemici += 1
             nemici_firerate += 1
             if orologio_j == True:
