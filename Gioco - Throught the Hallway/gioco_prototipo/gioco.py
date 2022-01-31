@@ -134,6 +134,10 @@ def hai_perso():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
     SCHERMO.blit(game_over, (0,0))
+    scritta_punteggio = "      total score: "+str(tempo)+"       "
+    print(scritta_punteggio)
+    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (255, 255, 0))
+    SCHERMO.blit(surf_text, (150, 270))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
@@ -154,7 +158,7 @@ while True:
     sfondox -= VEL_AVANZ
     if sfondox < -3328: sfondox = 0
     if basex < -2800: basex = 0
-    surf_text = fnt.render(str(tempo), True, (255, 255, 0))
+    surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
 
 
     keys=pygame.key.get_pressed()
