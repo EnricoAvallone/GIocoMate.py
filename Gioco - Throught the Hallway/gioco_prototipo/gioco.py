@@ -331,7 +331,7 @@ while True:
 
         if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
-            proiettile_attivo.rect.x += 30
+            proiettile_attivo.rect.x += 28
                     
         else:
             allsprites = "vuoto"
