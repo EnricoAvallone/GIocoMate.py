@@ -13,6 +13,8 @@ random.seed()
 
 all_sprites = pygame.sprite.Group()
 all_enemies = pygame.sprite.Group()
+proiettili_all_enemies = pygame.sprite.Group()
+personaggio = pygame.sprite.Group()
 
 sfondo = pygame.image.load("sfondo_luna.png")
 base = pygame.image.load("base_corridoio.png")
@@ -36,7 +38,7 @@ VEL_AVANZ = 9
 def inizializza():
     
     #global uccello
-    global uccellox, uccelloy, proiettili_dict, salto, gravity
+    global uccellox, uccelloy, proiettili_dict, salto, gravity, yinizio
     #global sfondo
     global basex, sfondox
     #global nemici 
@@ -75,6 +77,7 @@ def inizializza():
     nemici_firerate = 0
     sparo_nemici = False
     nemici_n_proiettile= 0
+    yinizio = 0
     punti_dict = {}
     n_list = 0
     punti_dict = {}
@@ -98,17 +101,17 @@ def disegna_oggetti():
     
     all_enemies.draw(SCHERMO)
 
-if allsprites == "vuoto":
-    all_sprites.empty()
-    pass
-else:
-    all_sprites.draw(SCHERMO)
+    if allsprites == "vuoto":
+        all_sprites.empty()
+        pass
+    else:
+        all_sprites.draw(SCHERMO)
 
-if nemici_allsprites == "vuoto" and sparo_nemici == False:
-    proiettili_all_enemies.empty()
-    pass
-else:
-    proiettili_all_enemies.draw(SCHERMO)
+    if nemici_allsprites == "vuoto" and sparo_nemici == False:
+        proiettili_all_enemies.empty()
+        pass
+    else:
+        proiettili_all_enemies.draw(SCHERMO)
     
     all_enemies.draw(SCHERMO)
 
@@ -315,20 +318,12 @@ while True:
             allsprites = "pieno"
             for i in punti_dict:
                 punto_traiettoria = punti_dict[i]
-                proiettile_attivo.rect.topright = punto_traiettoria
+                proiettile_attivo.rect.x += 30
             
         else:
             allsprites = "vuoto"
 
 
-   
 
-
-        
-        
-    
-
-
-    
     disegna_oggetti()
     aggiorna()
