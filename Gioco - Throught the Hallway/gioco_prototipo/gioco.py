@@ -1,3 +1,4 @@
+from time import time
 import pygame
 from pygame.locals import *
 import random
@@ -23,6 +24,13 @@ game_over = pygame.image.load("game_over.png")
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
 
+fnt = pygame.font.SysFont("Times New Roman", 40)
+
+
+
+
+
+
 
 clk = pygame.time.Clock()
 
@@ -38,18 +46,19 @@ VEL_AVANZ = 9
 def inizializza():
     
     #global uccello
-    global uccellox, uccelloy, proiettili_dict, salto, gravity, yinizio
+    global uccellox, uccelloy, proiettili_dict, salto, gravity
     #global sfondo
     global basex, sfondox
     #global nemici 
     global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies
     #global orologi
-    global clock_nemici, clock_jetpack, orologio_j
+    global clock_nemici, clock_jetpack, orologio_j,tempo
     #global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     #global proiettili amici
-    global n_P, all_sprites, n_list, punti_dict, traiettoria
+    global n_P, all_sprites
     
+    tempo = 0
     uccellox, uccelloy = 60,150
     basex = 0
     sfondox = 0
@@ -71,18 +80,22 @@ def inizializza():
     clock_nemici = 0
     clock_jetpack = 0
     orologio_j = False
+    #__a = 0
+    #__b = 0
+    #__c = 0
+    #__x = uccellox
+    #__y = uccelloy
     n_P= 0
     n_N= 0
     gravity=7
     nemici_firerate = 0
     sparo_nemici = False
     nemici_n_proiettile= 0
-    yinizio = 0
-    punti_dict = {}
-    n_list = 0
-    punti_dict = {}
-    traiettoria = uccellox
     aggiorna()
+    
+
+    
+    
 
 
 def aggiorna():
@@ -92,14 +105,11 @@ def aggiorna():
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1550))
     SCHERMO.blit(base, (basex,0))
-    SCHERMO.blit(uccello, (60,uccelloy))
-    if allsprites == "vuoto":
-        all_sprites.empty()
-        pass
-    else:
-        all_sprites.draw(SCHERMO)
-    
-    all_enemies.draw(SCHERMO)
+    SCHERMO.blit(surf_text, (650, 10))
+    uccello.rect = uccello.image.get_rect()
+    uccello.rect.topright = ( 60 , uccelloy)
+    personaggio.draw(SCHERMO)
+
 
     if allsprites == "vuoto":
         all_sprites.empty()
@@ -115,20 +125,19 @@ def disegna_oggetti():
     
     all_enemies.draw(SCHERMO)
 
-
-#class retta:
-
-    #def __init__(self):
-        #n_list = 0
-        #traiettoria = uccellox
-        #punti_dict = {}
-
-    #def genera_punti(self):
+    
     
 
 
+
 def hai_perso():
-    #SCHERMO.blit(game_over, (50,180))
+    pygame.mixer.music.load("sus.mp3")
+    pygame.mixer.music.play(1, 0)
+    SCHERMO.blit(game_over, (0,0))
+    scritta_punteggio = "      total score: "+str(tempo)+"       "
+    print(scritta_punteggio)
+    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (255, 255, 0))
+    SCHERMO.blit(surf_text, (150, 270))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
@@ -148,9 +157,11 @@ while True:
     basex -= VEL_AVANZ
     sfondox -= VEL_AVANZ
     if sfondox < -3328: sfondox = 0
-    if basex < -0: basex = 0
-    keys=pygame.key.get_pressed()
+    if basex < -2800: basex = 0
+    surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
 
+
+    keys=pygame.key.get_pressed()
     
 
     if uccelloy == 320:
@@ -166,8 +177,7 @@ while True:
     if keys[K_SPACE] and uccelloy > 319:
         salto =True
     
-    if keys[K_q]:
-        pygame.quit()
+    
 
         
     if keys[K_j]:
@@ -190,22 +200,22 @@ while True:
         else:
             gravity = 8
             salto = False
-        yinizio.clear()
+    
 
 
     if clock_nemici == 5:
         clock_nemici= 0
         n_N += 1
-        n_nemico= (n_N)
         spr_ghost = pygame.sprite.Sprite(all_enemies)
         spr_ghost.image = pygame.image.load("uccello.png")
         spr_ghost.rect = spr_ghost.image.get_rect()
         spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(240, 320))
 
-        nemici_dict.update({n_nemico: spr_ghost})
+        nemici_dict.update({n_N: spr_ghost})
+        
     else:
         pass
-
+    
 
     if nemici_firerate == 3:
         sparo_nemici = True
@@ -226,37 +236,26 @@ while True:
                 sparo_nemici = False
     else:
         pass
-    
+
+
 
     for event in pygame.event.get():
 
         
        
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
-
+            
             pygame.mixer.music.load("sparo.mp3")
             pygame.mixer.music.play(1, 0)
             n_P += 1
-            n_proiettile= (n_P)
             spr_proiettile = pygame.sprite.Sprite(all_sprites)
-
             spr_proiettile.image = pygame.image.load("proiettile.png")
             spr_proiettile.rect = spr_proiettile.image.get_rect()
             
-            for i in range(800):
-                n_list += 1
-                traiettoria += 1
-                tupla = [traiettoria , uccelloy]
-                punti_dict.update({n_list: tupla})
-
-            print(punti_dict)
-            traiettoria = uccellox
-            punti_dict.clear()
-            n_list = 0
+            
 
             spr_proiettile.rect.topright = (uccellox, uccelloy)
-            proiettili_dict.update({n_proiettile: spr_proiettile})
-            
+            proiettili_dict.update({n_P: spr_proiettile})
 
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
@@ -266,19 +265,27 @@ while True:
                 pygame.quit()
 
         if event.type == pygame.USEREVENT: 
+            tempo+=1
             clock_nemici += 1
+            nemici_firerate += 1
             if orologio_j == True:
                 clock_jetpack += 1
                 if clock_jetpack == 10:
                     clock_jetpack = 0
-                    orologio_j = False                   
+                    orologio_j = False
+            
+
+
     
-                
-    
+
     if nemici_proiettili_dict:
         for n in nemici_proiettili_dict:
  
             nemici_proiettile_attivo = nemici_proiettili_dict[n]
+
+
+        
+
 
             if nemici_proiettile_attivo.rect.x > 0:
                 nemici_allsprites = "pieno"
@@ -293,9 +300,10 @@ while True:
                 hai_perso()
                 
             else:
-                pass     
-        
-
+                pass      
+    
+                
+     
     for i in proiettili_dict:
  
         proiettile_attivo = proiettili_dict[i]
@@ -312,18 +320,23 @@ while True:
                     pass
             else:
                 pass
-            
-            
+
         if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
-            for i in punti_dict:
-                punto_traiettoria = punti_dict[i]
-                proiettile_attivo.rect.x += 30
-            
+            proiettile_attivo.rect.x += 30
+                    
         else:
             allsprites = "vuoto"
 
 
+   
 
+
+        
+        
+    
+
+
+    
     disegna_oggetti()
     aggiorna()
