@@ -143,6 +143,8 @@ def hai_perso():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 inizializza()
                 ricominciamo = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                pygame.quit()
             if event.type == pygame.QUIT:
                 pygame.quit()
 
@@ -257,7 +259,7 @@ while True:
                 tupla = [traiettoria , uccelloy]
                 punti_dict.update({n_list: tupla})
 
-            print(punti_dict)
+            #print(punti_dict)
             traiettoria = uccellox
             punti_dict.clear()
             n_list = 0
@@ -308,12 +310,12 @@ while True:
                 hai_perso()
                 
             else:
-                pass      
+                pass
     
                 
-     
+    
     for i in proiettili_dict:
- 
+
         proiettile_attivo = proiettili_dict[i]
         for a in nemici_dict:
             nemico_attivo = nemici_dict[a]
@@ -329,7 +331,7 @@ while True:
             else:
                 pass
 
-        if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
+        if proiettile_attivo.rect.x < 710:
             allsprites = "pieno"
             proiettile_attivo.rect.x += 30
                     
