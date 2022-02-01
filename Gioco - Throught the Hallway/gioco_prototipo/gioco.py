@@ -49,7 +49,7 @@ VEL_AVANZ = 9
 
 def inizializza():
     #global power-up
-    global power_up
+    global power_up, shuffle_pu
     #global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity
     #global sfondo
@@ -98,7 +98,8 @@ def inizializza():
     traiettoria = uccellox
     tempo_spawn = 5
     power_up = [palla_di_neve, drone, scudo]
-    random.shuffle(power_up)
+    shuffle_pu = random.choice(power_up)
+    
     aggiorna()
     
 
@@ -114,7 +115,7 @@ def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1550))
     SCHERMO.blit(base, (basex,0))
     SCHERMO.blit(surf_text, (600, 10))
-    #SCHERMO.blit(power_up[0], (350, 250))
+    #SCHERMO.blit(shuffle_pu, (350, 250))
 
     for hp in nemici_dict:
         nemico_attivo = nemici_dict[hp]
