@@ -143,7 +143,7 @@ def hai_perso():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 inizializza()
                 ricominciamo = True
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -177,7 +177,7 @@ while True:
     if keys[K_SPACE] and uccelloy > 319:
         salto =True
     
-    if keys[K_q]:
+    if keys[K_ESCAPE]:
         pygame.quit()
 
         
@@ -310,12 +310,12 @@ while True:
                 hai_perso()
                 
             else:
-                pass
+                pass      
     
                 
-    
+     
     for i in proiettili_dict:
-
+ 
         proiettile_attivo = proiettili_dict[i]
         for a in nemici_dict:
             nemico_attivo = nemici_dict[a]
@@ -331,7 +331,7 @@ while True:
             else:
                 pass
 
-        if proiettile_attivo.rect.x < 710:
+        if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
             proiettile_attivo.rect.x += 30
                     
