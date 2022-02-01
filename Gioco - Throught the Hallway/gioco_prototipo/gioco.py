@@ -103,7 +103,7 @@ def aggiorna():
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1550))
     SCHERMO.blit(base, (basex,0))
-    SCHERMO.blit(surf_text, (650, 10))
+    SCHERMO.blit(surf_text, (600, 10))
     uccello.rect = uccello.image.get_rect()
     uccello.rect.topright = ( 60 , uccelloy)
     personaggio.draw(SCHERMO)
@@ -331,7 +331,7 @@ while True:
 
         if proiettile_attivo.rect.x < SCHERMO.get_width()-10:
             allsprites = "pieno"
-            proiettile_attivo.rect.x += 28
+            proiettile_attivo.rect.x += 30
                     
         else:
             allsprites = "vuoto"
