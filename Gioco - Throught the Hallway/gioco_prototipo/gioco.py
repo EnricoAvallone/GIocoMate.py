@@ -215,11 +215,11 @@ while True:
             gravity = 8
             salto = False
     
-    if tempo == 50:
+    if tempo == 51:
         tempo_spawn = 4
     if tempo == 100:
         tempo_spawn = 3
-    if tempo == 300:
+    if tempo == 299:
         tempo_spawn = 2
 
     if clock_nemici == tempo_spawn:
