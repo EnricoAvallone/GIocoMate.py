@@ -20,6 +20,7 @@ personaggio = pygame.sprite.Group()
 sfondo = pygame.image.load("sfondo_luna.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
+drone_amico = pygame.image.load("DroneAmico.png")
 
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
@@ -49,7 +50,7 @@ VEL_AVANZ = 9
 
 def inizializza():
     #global power-up
-    global power_up, shuffle_pu
+    global power_up, shuffle_pu, drone_f
     #global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity
     #global sfondo
@@ -99,7 +100,7 @@ def inizializza():
     tempo_spawn = 5
     power_up = [palla_di_neve, drone, scudo]
     shuffle_pu = random.choice(power_up)
-    
+    drone_f = False
     aggiorna()
     
 
@@ -116,6 +117,9 @@ def disegna_oggetti():
     SCHERMO.blit(base, (basex,0))
     SCHERMO.blit(surf_text, (600, 10))
     #SCHERMO.blit(shuffle_pu, (350, 250))
+
+    if drone_f == True:
+        SCHERMO.blit(drone_amico, (90, 100))
 
     for hp in nemici_dict:
         nemico_attivo = nemici_dict[hp]
@@ -193,7 +197,10 @@ while True:
         gravity = 8
     
     
-
+    if keys[K_1]:
+        drone_f = True
+    else:
+        drone_f = False
 
     if keys[K_SPACE] and uccelloy > 319:
         salto =True
