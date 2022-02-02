@@ -1,3 +1,4 @@
+from distutils.spawn import spawn
 from time import time
 import pygame
 from pygame.locals import *
@@ -12,6 +13,7 @@ os.chdir ("Gioco - Throught the Hallway/gioco_prototipo")
 pygame.init()
 random.seed()
 
+all_powerup = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_enemies = pygame.sprite.Group()
 proiettili_all_enemies = pygame.sprite.Group()
@@ -49,7 +51,7 @@ VEL_AVANZ = 9
 
 def inizializza():
     #global power-up
-    global power_up, shuffle_pu
+    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn
     #global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity
     #global sfondo
@@ -57,7 +59,7 @@ def inizializza():
     #global nemici 
     global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies, nemici_life
     #global orologi
-    global clock_nemici, clock_jetpack, orologio_j,tempo, tempo_spawn
+    global clock_nemici, clock_jetpack, orologio_j,tempo, tempo_spawn, clk_spawn_pu
     #global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     #global proiettili amici
@@ -89,6 +91,7 @@ def inizializza():
     orologio_j = False
     n_P= 0
     n_N= 0
+    n_M = 0
     gravity=7
     nemici_firerate = 0
     sparo_nemici = False
@@ -97,8 +100,14 @@ def inizializza():
     punti_dict = {}
     traiettoria = uccellox
     tempo_spawn = 5
+    powerup_dict = {}
+    powerup_dict.clear()
+    allpowerup = "Vuoto"
+    all_powerup.empty()
     power_up = [palla_di_neve, drone, scudo]
     shuffle_pu = random.choice(power_up)
+    clk_spawn_pu = 0
+    spawn = False
     
     aggiorna()
     
@@ -135,6 +144,13 @@ def disegna_oggetti():
         pass
     else:
         all_sprites.draw(SCHERMO)
+
+    if allpowerup == "vuoto":
+        all_powerup.empty()
+        pass
+    else:
+        all_powerup.draw(SCHERMO)
+    
 
     if nemici_allsprites == "vuoto" and sparo_nemici == False:
         proiettili_all_enemies.empty()
@@ -230,6 +246,29 @@ while True:
     if tempo == 299:
         tempo_spawn = 2
 
+
+
+        
+    if clk_spawn_pu== 5:
+        clk_spawn_pu = 0
+        n_M += 1
+        spr_powerup = pygame.sprite.Sprite(all_powerup)
+        #palla_di_neve = pygame.image.load("PalladiNeve.png")
+        #drone = pygame.image.load("Drone.png")
+        #scudo = pygame.image.load("Scudo.png")
+        u = int(random.randrange(1,3))
+        if u == 1:
+            spr_powerup.image = pygame.image.load("Scudo.png")
+        elif u == 2:
+            spr_powerup.image = pygame.image.load("Drone.png")
+        else:
+            spr_powerup.image = pygame.image.load("PalladiNeve.png")
+        spr_powerup.rect = spr_powerup.image.get_rect()
+        spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(10, 320))
+        
+        powerup_dict.update({n_M: spr_powerup})
+    
+
     if clock_nemici == tempo_spawn:
         clock_nemici= 0
         n_N += 1
@@ -244,7 +283,7 @@ while True:
         
     else:
         pass
-    
+
 
     if nemici_firerate == 3:
         sparo_nemici = True
@@ -303,6 +342,7 @@ while True:
                 pygame.quit()
 
         if event.type == pygame.USEREVENT: 
+            clk_spawn_pu+=1
             tempo+=1
             clock_nemici += 1
             nemici_firerate += 1
@@ -352,7 +392,16 @@ while True:
         else:
             allsprites = "vuoto"
 
-
+    for e in powerup_dict:
+        powerup_attivo = powerup_dict[e]
+    
+        if powerup_attivo.rect.x > 0:
+            allpowerup = "pieno"
+            powerup_attivo.rect.x -= 5                
+        else:
+            allpowerup = "vuoto"
+            powerup_attivo.kill()
+           
    
     for n in nemici_proiettili_dict:
         nemici_proiettile_attivo = nemici_proiettili_dict.get(n)
