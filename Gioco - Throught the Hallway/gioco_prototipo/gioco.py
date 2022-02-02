@@ -22,6 +22,10 @@ personaggio = pygame.sprite.Group()
 sfondo = pygame.image.load("sfondo_luna.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
+vita100 = pygame.image.load("vita_100%.png")
+vita50 = pygame.image.load("vita_50%.png")
+vita75 = pygame.image.load("vita_75%.png")
+vita25 = pygame.image.load("vita_25%.png")
 
 uccello = pygame.sprite.Sprite(personaggio)
 uccello.image = pygame.image.load("uccello.png")
@@ -130,9 +134,18 @@ def disegna_oggetti():
         nemico_attivo = nemici_dict[hp]
 
         if nemico_attivo.alive()== True:
-            scritta_vita = nemici_life[hp]
-            vita_text = fnt_life.render(str(scritta_vita), True, (127, 255, 212))
-            SCHERMO.blit(vita_text, (nemico_attivo.rect.x, nemico_attivo.rect.y-5))
+            pos_x = nemico_attivo.rect.x
+            pos_y = nemico_attivo.rect.y
+
+            if nemici_life[hp] == 4:
+                SCHERMO.blit(vita100, (pos_x +4, pos_y-5))
+            elif nemici_life[hp] == 3:
+                SCHERMO.blit(vita75, (pos_x +4, pos_y-5))
+            elif nemici_life[hp] == 2:
+                SCHERMO.blit(vita50, (pos_x +4, pos_y-5))
+            elif nemici_life[hp] == 1:
+                SCHERMO.blit(vita25, (pos_x +4, pos_y-5))
+
 
     uccello.rect = uccello.image.get_rect()
     uccello.rect.topright = ( 60 , uccelloy)
@@ -382,6 +395,8 @@ while True:
                     
                 else:
                     pass
+                
+                
             else:
                 pass
 
