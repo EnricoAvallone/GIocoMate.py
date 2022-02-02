@@ -1,24 +1,28 @@
-from distutils.spawn import spawn
-from time import time
+#importo le librerie
 import pygame
 from pygame.locals import *
 import random
 import os
-
-from pygame.constants import K_0, K_DOWN, K_LEFT, K_RIGHT, K_SPACE, K_UP, KEYDOWN, KEYUP, K_a, K_d, K_s, K_w
 from pygame.time import Clock
 
+#indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir ("Gioco - Throught the Hallway/gioco_prototipo")
 
+#avvio le librerie
 pygame.init()
 random.seed()
 
-all_powerup = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
-all_enemies = pygame.sprite.Group()
-proiettili_all_enemies = pygame.sprite.Group()
-personaggio = pygame.sprite.Group()
 
+##definisco i gruppi di sprites##
+all_powerup = pygame.sprite.Group()#gli sprite dei powerups
+all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
+all_enemies = pygame.sprite.Group()#gli sprite dei nemici
+proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
+personaggio = pygame.sprite.Group()#lo sprite del personaggio
+uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
+
+
+##ricavo le immagini necessarie##
 sfondo = pygame.image.load("sfondo_luna.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
@@ -26,24 +30,14 @@ vita100 = pygame.image.load("vita_100%.png")
 vita50 = pygame.image.load("vita_50%.png")
 vita75 = pygame.image.load("vita_75%.png")
 vita25 = pygame.image.load("vita_25%.png")
-
-uccello = pygame.sprite.Sprite(personaggio)
-uccello.image = pygame.image.load("uccello.png")
-
-fnt = pygame.font.SysFont("Times New Roman", 40)
-fnt_life = pygame.font.SysFont("Times New Roman", 10)
-
-
 palla_di_neve = pygame.image.load("PalladiNeve.png")
 drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
+uccello.image = pygame.image.load("uccello.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 
 
-
-
-
-clk = pygame.time.Clock()
-
+##definisco il font e la grandezza dei testi##
+fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
 
 
 #Costanti globali
@@ -53,24 +47,28 @@ VEL_AVANZ = 9
 
 
 
-def inizializza():
-    #global power-up
-    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn
-    #global uccello
+def inizializza(): 
+    ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
+    ## questa funzione serve anche a resettare tutte le variabili una volta restartato il gioco
+
+    ##le rendo sempre accessibili##
+    # - global power-up
+    global power_up, shuffle_pu, powerup_dict, n_pu, all_powerup, allpowerup, spawn
+    # - global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity
-    #global sfondo
+    # - global sfondo
     global basex, sfondox
-    #global nemici 
+    # - global nemici 
     global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies, nemici_life
-    #global orologi
+    # - global orologi
     global clock_nemici, clock_jetpack, orologio_j,tempo, tempo_spawn, clk_spawn_pu
-    #global proiettili nemici
+    # - global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
-    #global proiettili amici
+    # - global proiettili amici
     global n_P, all_sprites, punti_dict, traiettoria, n_list
 
-    tempo = 0
-    uccellox, uccelloy = 60,150
+    
+    uccellox, uccelloy = 60,150 #posizione personaggio ad inizio gioco
     basex = 0
     sfondox = 0
     proiettili_dict = {}
@@ -89,15 +87,21 @@ def inizializza():
     nemici_dict.clear()
     nemici_life.clear()
     proiettili_dict.clear()
-    pygame.time.set_timer(pygame.USEREVENT, 1000)
-    clock_nemici = 0
-    clock_jetpack = 0
-    orologio_j = False
-    n_P= 0
-    n_N= 0
-    n_M = 0
-    gravity=7
-    nemici_firerate = 0
+    
+    pygame.time.set_timer(pygame.USEREVENT, 1000) #ogni secondo avviene USEREVENT, utilizzo questo evento per far funzionare tutti i timer
+    clock_nemici = 0 #per determinare ogni quanto spawnino i nemici
+    clock_jetpack = 0 #per determinare il tempo di utilizzo del jetpack
+    tempo = 0 #tempo generale che fornisce il punteggio
+    nemici_firerate = 0#per determinare il tempo che passa tra gli spari nemici
+    orologio_j = False #variabile per far attivare e disattivare il jetpack
+    
+    ##utilizzo delle variabili per dare un nome agli elementi da inserire nei dizionari
+    n_P= 0 #nome proiettile 
+    n_N= 0 #nome nemico 
+    n_pu = 0 #nome power-up
+
+    gravity=7 #la velocità con cui il personaggio cade inizialmente
+    
     sparo_nemici = False
     nemici_n_proiettile= 0
     n_list = 0
@@ -264,7 +268,7 @@ while True:
         
     if clk_spawn_pu== 35:
         clk_spawn_pu = 0
-        n_M += 1
+        n_pu += 1
         spr_powerup = pygame.sprite.Sprite(all_powerup)
         #palla_di_neve = pygame.image.load("PalladiNeve.png")
         #drone = pygame.image.load("Drone.png")
@@ -279,7 +283,7 @@ while True:
         spr_powerup.rect = spr_powerup.image.get_rect()
         spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(10, 320))
         
-        powerup_dict.update({n_M: spr_powerup})
+        powerup_dict.update({n_pu: spr_powerup})
     
 
     if clock_nemici == tempo_spawn:
