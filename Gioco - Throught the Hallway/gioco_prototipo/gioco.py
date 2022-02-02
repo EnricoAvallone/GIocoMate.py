@@ -295,7 +295,7 @@ while True:
             if nemico_attivo.alive() == True:
                 nemici_n_proiettile += 1
                 spr_proiettile = pygame.sprite.Sprite(proiettili_all_enemies)
-                spr_proiettile.image = pygame.image.load("proiettile.png")
+                spr_proiettile.image = pygame.image.load("proiettile_nemico.png")
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
                 spr_proiettile.rect.topright = (nemici_dict[b].rect.x, nemici_dict[b].rect.y)
 
