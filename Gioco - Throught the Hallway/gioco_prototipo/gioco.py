@@ -249,7 +249,7 @@ while True:
 
 
         
-    if clk_spawn_pu== 5:
+    if clk_spawn_pu== 35:
         clk_spawn_pu = 0
         n_M += 1
         spr_powerup = pygame.sprite.Sprite(all_powerup)
