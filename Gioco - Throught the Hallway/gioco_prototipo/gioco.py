@@ -256,7 +256,7 @@ while True:
         tempo_spawn = 4
     if tempo == 100:
         tempo_spawn = 3
-    if tempo == 299:
+    if tempo == 300:
         tempo_spawn = 2
 
 
