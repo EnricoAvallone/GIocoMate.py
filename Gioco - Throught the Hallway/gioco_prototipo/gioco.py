@@ -88,6 +88,7 @@ def inizializza():
     nemici_life.clear()
     proiettili_dict.clear()
     
+    ##TIMER##
     pygame.time.set_timer(pygame.USEREVENT, 1000) #ogni secondo avviene USEREVENT, utilizzo questo evento per far funzionare tutti i timer
     clock_nemici = 0 #per determinare ogni quanto spawnino i nemici
     clock_jetpack = 0 #per determinare il tempo di utilizzo del jetpack
@@ -95,14 +96,14 @@ def inizializza():
     nemici_firerate = 0#per determinare il tempo che passa tra gli spari nemici
     orologio_j = False #variabile per far attivare e disattivare il jetpack
     
+    ##NOMI DICT##
     ##utilizzo delle variabili per dare un nome agli elementi da inserire nei dizionari
     n_P= 0 #nome proiettile 
     n_N= 0 #nome nemico 
     n_pu = 0 #nome power-up
 
     gravity=7 #la velocità con cui il personaggio cade inizialmente
-    
-    sparo_nemici = False
+    sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
     nemici_n_proiettile= 0
     n_list = 0
     punti_dict = {}
