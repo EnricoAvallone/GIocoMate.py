@@ -195,10 +195,10 @@ def hai_perso():
 ### Ciclo Principale ###
 def start():
     global ricominciamo
-    SCHERMO.blit(sfondo, (0,0))
-    scritta_punteggio = "      Per giocare premi freccia in su "+"       "
-    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (255, 255, 0))
-    SCHERMO.blit(surf_text, (150, 270))
+    SCHERMO.blit(sfondo, (-800, -700))
+    scritta_punteggio = " Per giocare clicca il tasto sinistro "+"       "
+    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (50, 50, 255))
+    SCHERMO.blit(surf_text, (35, 190))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
