@@ -15,6 +15,7 @@ random.seed()
 
 ##definisco i gruppi di sprites##
 all_powerup = pygame.sprite.Group()#gli sprite dei powerups
+all_help = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
 all_enemies = pygame.sprite.Group()#gli sprite dei nemici
 proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
@@ -36,8 +37,7 @@ scudo = pygame.image.load("Scudo.png")
 uccello.image = pygame.image.load("uccello.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 
 
-##definisco il font e la grandezza dei testi##
-fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
+
 
 
 #Costanti globali
@@ -53,7 +53,7 @@ def inizializza():
 
     ##le rendo sempre accessibili##
     # - global power-up
-    global power_up, shuffle_pu, powerup_dict, n_pu, all_powerup, allpowerup, spawn
+    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo
     # - global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity
     # - global sfondo
@@ -66,6 +66,8 @@ def inizializza():
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     # - global proiettili amici
     global n_P, all_sprites, punti_dict, traiettoria, n_list
+
+    global surf_text, fnt, past
 
     
     uccellox, uccelloy = 60,150 #posizione personaggio ad inizio gioco
@@ -95,12 +97,18 @@ def inizializza():
     tempo = 0 #tempo generale che fornisce il punteggio
     nemici_firerate = 0#per determinare il tempo che passa tra gli spari nemici
     orologio_j = False #variabile per far attivare e disattivare il jetpack
+    timerscudo = False
+    timerpalladineve = False
+    timerdrone = False
+    timerscudo_ = 0
+    timerpalladineve_ = 0
+    timerdrone_ = 0
     
     ##NOMI DICT##
     ##utilizzo delle variabili per dare un nome agli elementi da inserire nei dizionari
     n_P= 0 #nome proiettile 
     n_N= 0 #nome nemico 
-    n_pu = 0 #nome power-up
+    n_M = 0 #nome power-up
 
     gravity=7 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
@@ -117,8 +125,17 @@ def inizializza():
     shuffle_pu = random.choice(power_up)
     clk_spawn_pu = 0
     spawn = False
+    past = False
+    type_powerup = {}
+    dropscudo = False
+    dropdrone = False
+    droppalladineve = False
+
+    ##definisco il font e la grandezza dei testi##
+    fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     
-    aggiorna()
+
+
     
 
 def aggiorna():
@@ -128,8 +145,26 @@ def aggiorna():
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1550))
     SCHERMO.blit(base, (basex,0))
+    surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
     SCHERMO.blit(surf_text, (600, 10))
-    #SCHERMO.blit(shuffle_pu, (350, 250))
+    
+
+
+    if dropdrone == True:
+        all_help.draw(SCHERMO)
+    else:
+        pass
+
+    if droppalladineve == True:
+        all_help.draw(SCHERMO)
+    else:
+        pass
+
+    if dropscudo == True:
+        all_help.draw(SCHERMO)
+        
+    else:
+        pass
 
     for hp in nemici_dict:
         nemico_attivo = nemici_dict[hp]
@@ -172,8 +207,8 @@ def disegna_oggetti():
     else:
         proiettili_all_enemies.draw(SCHERMO)
     
+    all_powerup.draw(SCHERMO)
     all_enemies.draw(SCHERMO)
-
 
 
 def hai_perso():
@@ -199,17 +234,21 @@ def hai_perso():
 #inizializzo Variabili
 ### Ciclo Principale ###
 def start():
-    global ricominciamo
+    global ricominciamo, fnt
+
+    fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     SCHERMO.blit(sfondo, (-800, -700))
-    scritta_punteggio = " Per giocare clicca il tasto sinistro "+"       "
-    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (50, 50, 255))
-    SCHERMO.blit(surf_text, (35, 190))
+    scritta_inizio = " Per giocare clicca il tasto sinistro "+"       "
+    testo_inizio = fnt.render(scritta_inizio, True, (0, 0, 0), (50, 50, 255))
+    SCHERMO.blit(testo_inizio, (35, 190))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 inizializza()
+                aggiorna()
+                disegna_oggetti()
                 ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
@@ -224,7 +263,7 @@ if ricominciamo == True:
         sfondox -= VEL_AVANZ
         if sfondox < -3328: sfondox = 0
         if basex < -2800: basex = 0
-        surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
+        
 
 
         keys=pygame.key.get_pressed()
@@ -279,21 +318,21 @@ if ricominciamo == True:
 
         
 
-        if clk_spawn_pu== 35:
+        if clk_spawn_pu== 30:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
 
-        #palla_di_neve = pygame.image.load("PalladiNeve.png")
-        #drone = pygame.image.load("Drone.png")
-        #scudo = pygame.image.load("Scudo.png")
-            u = int(random.randrange(1,3))
+            u = int(random.randrange(1,4))
             if u == 1:
                 spr_powerup.image = pygame.image.load("Scudo.png")
+                type_powerup.update({n_M: "scudo"})
             elif u == 2:
                 spr_powerup.image = pygame.image.load("Drone.png")
-            else:
+                type_powerup.update({n_M: "drone"})
+            elif u == 3:
                 spr_powerup.image = pygame.image.load("PalladiNeve.png")
+                type_powerup.update({n_M: "palladineve"})
             spr_powerup.rect = spr_powerup.image.get_rect()
             spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(10, 320))
         
@@ -335,8 +374,8 @@ if ricominciamo == True:
                     nemici_proiettili_dict.update({nemici_n_proiettile: spr_proiettile})
                     nemici_firerate = 0
                     sparo_nemici = False
-        else:
-            pass
+            
+        
 
 
 
@@ -376,7 +415,7 @@ if ricominciamo == True:
 
             if event.type == pygame.USEREVENT: 
                 clk_spawn_pu+=1
-                tempo+=1
+                tempo += 1
                 clock_nemici += 1
                 nemici_firerate += 1
                 if orologio_j == True:
@@ -384,17 +423,58 @@ if ricominciamo == True:
                     if clock_jetpack == 10:
                         clock_jetpack = 0
                         orologio_j = False
-            
+                if timerdrone == True:
+                    timerdrone_+=1
+                    if timerdrone_ == 20:
+                        timerdrone_ = 0
+                        all_powerup.empty()
+                        timerdrone = False
+                if timerpalladineve == True:
+                    timerpalladineve_ += 1
+                    if timerpalladineve_ == 20:
+                        timerpalladineve_ = 0
+                        all_powerup.empty()
+                        timerpalladineve = False
+                if timerscudo == True:
+                    timerscudo_ += 1
+                    if timerscudo_ == 20:
+                        timerscudo_ = 0
+                        all_powerup.empty()
+                        timerscudo = False
 
-                else:
-                    nemici_allsprites = "vuoto"
-            
-                if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
-                
-                    hai_perso()
-                
-                else:
-                    pass      
+
+        if timerdrone_ == 1:
+            spr_drone = pygame.sprite.Sprite(all_help)
+            spr_drone.image = pygame.image.load("DroneAmico.png")
+            spr_drone.rect = spr_drone.image.get_rect()
+            spr_drone.rect.topright = (50, 50)
+        if timerpalladineve_ == 1:
+            spr_palladineve = pygame.sprite.Sprite(all_help)
+            spr_palladineve.image = pygame.image.load("DroneAmico.png")
+            spr_palladineve.rect = spr_palladineve.image.get_rect()
+            spr_palladineve.rect.topright = (50, 50)
+        if timerscudo_ == 1:
+            spr_scudo = pygame.sprite.Sprite(all_help)
+            spr_scudo.image = pygame.image.load("DroneAmico.png")
+            spr_scudo.rect = spr_scudo.image.get_rect()
+            spr_scudo.rect.topright = (50, 50)
+
+        if timerdrone_ > 0:
+            dropdrone = True
+        else:
+            dropdrone = False
+        if timerpalladineve_ > 0:
+            droppalladineve = True
+        else:
+            droppalladineve = False
+        if timerscudo_ > 0:
+            dropscudo = True
+        else:
+            dropscudo = False        
+
+
+        if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
+            hai_perso()
     
         for i in proiettili_dict:
  
@@ -404,7 +484,6 @@ if ricominciamo == True:
            
                 if nemico_attivo.alive()== True:
                     nemico_attivo = nemici_dict[a]
-
             
                     if pygame.sprite.spritecollide(nemico_attivo, all_sprites, True):
                         if nemici_life:
@@ -429,7 +508,25 @@ if ricominciamo == True:
 
         for e in powerup_dict:
             powerup_attivo = powerup_dict[e]
-    
+
+            if powerup_attivo.alive()== True:
+                powerup_attivo = powerup_dict[e]
+                if pygame.sprite.spritecollide(uccello, all_powerup , True):
+                    if type_powerup[e] == "palladineve":
+                        timerpalladineve = True
+                        powerup_attivo.kill()
+                    elif type_powerup[e] == "drone":
+                        timerdrone = True
+                        powerup_attivo.kill()
+                    elif type_powerup[e] == "scudo":
+                        timerscudo = True
+                        powerup_attivo.kill()
+                        
+            else:
+                pass
+                                
+
+            
             if powerup_attivo.rect.x > 0:
                 allpowerup = "pieno"
                 powerup_attivo.rect.x -= 5                
@@ -464,6 +561,6 @@ if ricominciamo == True:
     
 
 
-    
-        disegna_oggetti()
         aggiorna()
+        disegna_oggetti()
+        
