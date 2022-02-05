@@ -1,4 +1,5 @@
 #importo le librerie
+from inspect import modulesbyfile
 import pygame
 from pygame.locals import *
 import random
@@ -35,7 +36,7 @@ palla_di_neve = pygame.image.load("PalladiNeve.png")
 drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
 uccello.image = pygame.image.load("uccello.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
-
+play_button = pygame.image.load("play_button.png")
 
 
 
@@ -236,20 +237,26 @@ def hai_perso():
 def start():
     global ricominciamo, fnt
 
-    fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
+    #fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     SCHERMO.blit(sfondo, (-800, -700))
-    scritta_inizio = " Per giocare clicca il tasto sinistro "+"       "
-    testo_inizio = fnt.render(scritta_inizio, True, (0, 0, 0), (50, 50, 255))
-    SCHERMO.blit(testo_inizio, (35, 190))
+    #scritta_inizio = " Per giocare clicca il tasto sinistro "+"       "
+    #testo_inizio = fnt.render(scritta_inizio, True, (0, 0, 0), (50, 50, 255))
+    #SCHERMO.blit(testo_inizio, (35, 190))
+    SCHERMO.blit(play_button, (0,0))
+    
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                inizializza()
-                aggiorna()
-                disegna_oggetti()
-                ricominciamo = True
+                mouse = pygame.mouse.get_pos()
+
+                if 230 <  mouse[0] < 444:#x
+                    if 181 <  mouse[1] < 246:#y
+                        inizializza()
+                        aggiorna()
+                        disegna_oggetti()
+                        ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
             if event.type == pygame.QUIT:
