@@ -1,5 +1,4 @@
 #importo le librerie
-from inspect import modulesbyfile
 import pygame
 from pygame.locals import *
 import random
@@ -35,16 +34,19 @@ vita25 = pygame.image.load("vita_25%.png")
 palla_di_neve = pygame.image.load("PalladiNeve.png")
 drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
-uccello.image = pygame.image.load("uccello.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
+uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
+uccello.rect = uccello.image.get_rect()
 play_button = pygame.image.load("play_button.png")
-
+uccello.rect.update(0,0,50,190)
 
 
 
 #Costanti globali
-SCHERMO = pygame.display.set_mode((700,400))
-FPS = 60
+SCHERMO = pygame.display.set_mode((1400,800))
+FPS = 120
 VEL_AVANZ = 9
+
+
 
 
 
@@ -71,7 +73,7 @@ def inizializza():
     global surf_text, fnt, past
 
     
-    uccellox, uccelloy = 60,150 #posizione personaggio ad inizio gioco
+    uccelloy = 500 #posizione personaggio ad inizio gioco
     basex = 0
     sfondox = 0
     proiettili_dict = {}
@@ -111,12 +113,12 @@ def inizializza():
     n_N= 0 #nome nemico 
     n_M = 0 #nome power-up
 
-    gravity=7 #la velocità con cui il personaggio cade inizialmente
+    gravity=0 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
     nemici_n_proiettile= 0
     n_list = 0
     punti_dict = {}
-    traiettoria = uccellox
+    traiettoria = 200
     tempo_spawn = 5
     powerup_dict = {}
     powerup_dict.clear()
@@ -144,12 +146,11 @@ def aggiorna():
     pygame.time.Clock().tick(FPS)
 
 def disegna_oggetti():
-    SCHERMO.blit(sfondo, (sfondox,-1550))
-    SCHERMO.blit(base, (basex,0))
+    SCHERMO.blit(sfondo, (sfondox,-1150))
+    SCHERMO.blit(base, (basex,400))
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
     SCHERMO.blit(surf_text, (600, 10))
     
-
 
     if dropdrone == True:
         all_help.draw(SCHERMO)
@@ -163,7 +164,6 @@ def disegna_oggetti():
 
     if dropscudo == True:
         all_help.draw(SCHERMO)
-        
     else:
         pass
 
@@ -184,8 +184,8 @@ def disegna_oggetti():
                 SCHERMO.blit(vita25, (pos_x +4, pos_y-5))
 
 
-    uccello.rect = uccello.image.get_rect()
-    uccello.rect.topright = ( 60 , uccelloy)
+    
+    uccello.rect.topright = ( 200 , uccelloy)
     personaggio.draw(SCHERMO)
 
 
@@ -269,24 +269,23 @@ if ricominciamo == True:
         basex -= VEL_AVANZ
         sfondox -= VEL_AVANZ
         if sfondox < -3328: sfondox = 0
-        if basex < -2800: basex = 0
+        if basex < -2100: basex = 0
         
 
 
         keys=pygame.key.get_pressed()
     
 
-        if uccelloy == 320:
-            gravity = 320
-            uccelloy = gravity
-        elif uccelloy < 320: 
+        if uccelloy == 550:
+            uccelloy = 550
+        elif uccelloy < 550: 
             uccelloy += gravity
-            gravity = 8
+            gravity = 14
     
     
 
 
-        if keys[K_SPACE] and uccelloy > 319:
+        if keys[K_SPACE] and uccelloy > 549:
             salto =True
     
         if keys[K_ESCAPE]:
@@ -307,11 +306,10 @@ if ricominciamo == True:
         
         if salto == True:
 
-            if uccelloy > 240:
-                gravity = -7
+            if uccelloy > 300:
+                gravity = -15
                 uccelloy += gravity
             else:
-                gravity = 8
                 salto = False
     
         if tempo == 51:
@@ -341,7 +339,7 @@ if ricominciamo == True:
                 spr_powerup.image = pygame.image.load("PalladiNeve.png")
                 type_powerup.update({n_M: "palladineve"})
             spr_powerup.rect = spr_powerup.image.get_rect()
-            spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(10, 320))
+            spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(300, 720))
         
 
             powerup_dict.update({n_M: spr_powerup})
@@ -355,7 +353,7 @@ if ricominciamo == True:
             spr_ghost = pygame.sprite.Sprite(all_enemies)
             spr_ghost.image = pygame.image.load("uccello.png")
             spr_ghost.rect = spr_ghost.image.get_rect()
-            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(240, 340))
+            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(540, 640))
 
             nemici_dict.update({n_N: spr_ghost})
             nemici_life.update({n_N: hp})
@@ -402,15 +400,14 @@ if ricominciamo == True:
                 for i in range(700):
                     n_list += 1
                     traiettoria += 1
-                    tupla = [traiettoria , uccelloy]
+                    tupla = [traiettoria , uccelloy+40]
                     punti_dict.update({n_list: tupla})
 
             #print(punti_dict)
-                traiettoria = uccellox
                 punti_dict.clear()
                 n_list = 0
 
-                spr_proiettile.rect.topright = (uccellox, uccelloy)
+                spr_proiettile.rect.topright = (200, uccelloy)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
@@ -545,16 +542,16 @@ if ricominciamo == True:
         for n in nemici_proiettili_dict:
             nemici_proiettile_attivo = nemici_proiettili_dict.get(n)
             if not nemici_proiettile_attivo == None:
-            
 
 
                 if nemici_proiettile_attivo.rect.x > 0:
                     nemici_allsprites = "pieno"
-                    nemici_proiettile_attivo.rect.x -= 15
+                    nemici_proiettile_attivo.rect.x -= 25
             
                         
                 else:
                     nemici_allsprites = "vuoto"
+                    nemici_proiettile_attivo.kill()
                 
                 if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
                         nemici_proiettile_attivo.rect.x = 0
