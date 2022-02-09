@@ -377,7 +377,7 @@ if ricominciamo == True:
             n_N += 1
             hp = 4
             spr_ghost = pygame.sprite.Sprite(all_enemies1)
-            spr_ghost.image = pygame.image.load("uccello.png")
+            spr_ghost.image = pygame.image.load("Nemico.png")
             spr_ghost.rect = spr_ghost.image.get_rect()
             spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(440, 600))
 
@@ -392,7 +392,7 @@ if ricominciamo == True:
             n_K += 1
             hp = 4
             spr_enemies = pygame.sprite.Sprite(all_enemies2)
-            spr_enemies.image = pygame.image.load("uccello.png")
+            spr_enemies.image = pygame.image.load("Nemico.png")
             spr_enemies.rect = spr_enemies.image.get_rect()
             spr_enemies.rect.topright= (SCHERMO.get_width()-30, random.randrange(340, 640))
 
