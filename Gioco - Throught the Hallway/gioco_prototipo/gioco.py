@@ -17,7 +17,8 @@ random.seed()
 all_powerup = pygame.sprite.Group()#gli sprite dei powerups
 all_help = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
-all_enemies = pygame.sprite.Group()#gli sprite dei nemici
+all_enemies1 = pygame.sprite.Group()#gli sprite dei nemici
+all_enemies2 = pygame.sprite.Group()#gli sprite dei nemici 2
 proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
 personaggio = pygame.sprite.Group()#lo sprite del personaggio
 uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
@@ -48,7 +49,7 @@ VEL_AVANZ = 9
 
 
 
-
+#uccellox è inutile
 
 def inizializza(): 
     ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
@@ -62,9 +63,9 @@ def inizializza():
     # - global sfondo
     global basex, sfondox
     # - global nemici 
-    global  nemico, allsprites, allenemies, nemici_dict, n_N, all_enemies, nemici_life
+    global  nemico, allsprites, allenemies2, nemici_dict, n_N, all_enemies1, nemici_life, n_K, all_enemies2, nemici2_dict, nemici2_life
     # - global orologi
-    global clock_nemici, clock_jetpack, orologio_j,tempo, tempo_spawn, clk_spawn_pu
+    global clock_nemici1, clock_jetpack, orologio_j,tempo, tempo_spawn1, clk_spawn_pu, tempo_spawn2, clock_nemici2
     # - global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     # - global proiettili amici
@@ -80,22 +81,27 @@ def inizializza():
     nemici_proiettili_dict = {}
     nemici_dict = {}
     nemici_life = {}
+    nemici2_dict = {}
+    nemici2_life = {}
     nemico = False
     salto = False
     allsprites= "vuoto"
     nemici_allsprites = "vuoto"
-    allenemies= ""
+    allenemies2= "vuoto"
     all_sprites.empty()
-    all_enemies.empty()
+    all_enemies1.empty()
+    all_enemies2.empty()
     proiettili_all_enemies.empty()
     nemici_proiettili_dict.clear()
     nemici_dict.clear()
     nemici_life.clear()
     proiettili_dict.clear()
+    nemici2_life.clear()
     
     ##TIMER##
     pygame.time.set_timer(pygame.USEREVENT, 1000) #ogni secondo avviene USEREVENT, utilizzo questo evento per far funzionare tutti i timer
-    clock_nemici = 0 #per determinare ogni quanto spawnino i nemici
+    clock_nemici1 = 0 #per determinare ogni quanto spawnino i nemici
+    clock_nemici2 = 0 #per determinare ogni quanto spawnino i nemici
     clock_jetpack = 0 #per determinare il tempo di utilizzo del jetpack
     tempo = 0 #tempo generale che fornisce il punteggio
     nemici_firerate = 0#per determinare il tempo che passa tra gli spari nemici
@@ -112,6 +118,7 @@ def inizializza():
     n_P= 0 #nome proiettile 
     n_N= 0 #nome nemico 
     n_M = 0 #nome power-up
+    n_K = 0 #nome nemici 2
 
     gravity=0 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
@@ -119,7 +126,8 @@ def inizializza():
     n_list = 0
     punti_dict = {}
     traiettoria = 200
-    tempo_spawn = 5
+    tempo_spawn1 = 5
+    tempo_spawn2 = 7
     powerup_dict = {}
     powerup_dict.clear()
     allpowerup = "Vuoto"
@@ -183,6 +191,21 @@ def disegna_oggetti():
             elif nemici_life[hp] == 1:
                 SCHERMO.blit(vita25, (pos_x +4, pos_y-5))
 
+    for hp in nemici2_dict:
+        nemico2_attivo = nemici2_dict[hp]
+
+        if nemico2_attivo.alive()== True:
+            pos_x = nemico2_attivo.rect.x
+            pos_y = nemico2_attivo.rect.y
+
+            if nemici2_life[hp] == 4:
+                SCHERMO.blit(vita100, (pos_x +4, pos_y-5))
+            elif nemici2_life[hp] == 3:
+                SCHERMO.blit(vita75, (pos_x +4, pos_y-5))
+            elif nemici2_life[hp] == 2:
+                SCHERMO.blit(vita50, (pos_x +4, pos_y-5))
+            elif nemici2_life[hp] == 1:
+                SCHERMO.blit(vita25, (pos_x +4, pos_y-5))
 
     
     uccello.rect.topright = ( 200 , uccelloy)
@@ -200,7 +223,14 @@ def disegna_oggetti():
         pass
     else:
         all_powerup.draw(SCHERMO)
-    
+
+
+    if allenemies2 == "vuoto":
+        all_enemies2.empty()
+        pass
+    else:
+        all_enemies2.draw(SCHERMO)
+
 
     if nemici_allsprites == "vuoto" and sparo_nemici == False:
         proiettili_all_enemies.empty()
@@ -209,7 +239,8 @@ def disegna_oggetti():
         proiettili_all_enemies.draw(SCHERMO)
     
     all_powerup.draw(SCHERMO)
-    all_enemies.draw(SCHERMO)
+    all_enemies1.draw(SCHERMO)
+    all_enemies2.draw(SCHERMO)
 
 
 def hai_perso():
@@ -237,11 +268,7 @@ def hai_perso():
 def start():
     global ricominciamo, fnt
 
-    #fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     SCHERMO.blit(sfondo, (-800, -700))
-    #scritta_inizio = " Per giocare clicca il tasto sinistro "+"       "
-    #testo_inizio = fnt.render(scritta_inizio, True, (0, 0, 0), (50, 50, 255))
-    #SCHERMO.blit(testo_inizio, (35, 190))
     SCHERMO.blit(play_button, (0,0))
     
     aggiorna()
@@ -313,17 +340,17 @@ if ricominciamo == True:
                 salto = False
     
         if tempo == 51:
-            tempo_spawn = 4
+            tempo_spawn1 = 4
         if tempo == 100:
-            tempo_spawn = 3
+            tempo_spawn1 = 3
         if tempo == 300:
-            tempo_spawn = 2
+            tempo_spawn1 = 2
 
 
 
         
 
-        if clk_spawn_pu== 30:
+        if clk_spawn_pu== 35:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
@@ -346,17 +373,32 @@ if ricominciamo == True:
 
     
 
-        if clock_nemici == tempo_spawn:
-            clock_nemici= 0
+        if clock_nemici1 == tempo_spawn1:
+            clock_nemici1= 0
             n_N += 1
             hp = 4
-            spr_ghost = pygame.sprite.Sprite(all_enemies)
+            spr_ghost = pygame.sprite.Sprite(all_enemies1)
             spr_ghost.image = pygame.image.load("uccello.png")
             spr_ghost.rect = spr_ghost.image.get_rect()
-            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(540, 640))
+            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(440, 600))
 
             nemici_dict.update({n_N: spr_ghost})
             nemici_life.update({n_N: hp})
+        
+        else:
+            pass
+
+        if clock_nemici2 == tempo_spawn2:
+            clock_nemici2= 0
+            n_K += 1
+            hp = 4
+            spr_enemies = pygame.sprite.Sprite(all_enemies2)
+            spr_enemies.image = pygame.image.load("uccello.png")
+            spr_enemies.rect = spr_enemies.image.get_rect()
+            spr_enemies.rect.topright= (SCHERMO.get_width()-30, random.randrange(340, 640))
+
+            nemici2_dict.update({n_K: spr_enemies})
+            nemici2_life.update({n_K: hp})
         
         else:
             pass
@@ -397,17 +439,17 @@ if ricominciamo == True:
                 spr_proiettile.image = pygame.image.load("proiettile.png")
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
             
-                for i in range(700):
-                    n_list += 1
-                    traiettoria += 1
-                    tupla = [traiettoria , uccelloy+40]
-                    punti_dict.update({n_list: tupla})
+                #for i in range(700):
+                    #n_list += 1
+                    #traiettoria += 1
+                    #tupla = [traiettoria , uccelloy+40]
+                    #punti_dict.update({n_list: tupla})
 
-            #print(punti_dict)
-                punti_dict.clear()
-                n_list = 0
-
-                spr_proiettile.rect.topright = (200, uccelloy)
+                #print(punti_dict)
+                #punti_dict.clear()
+                #n_list = 0
+                yproiettile = uccelloy+70
+                spr_proiettile.rect.topright = (200, yproiettile)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
@@ -420,8 +462,9 @@ if ricominciamo == True:
             if event.type == pygame.USEREVENT: 
                 clk_spawn_pu+=1
                 tempo += 1
-                clock_nemici += 1
+                clock_nemici1 += 1
                 nemici_firerate += 1
+                clock_nemici2 += 1
                 if orologio_j == True:
                     clock_jetpack += 1
                     if clock_jetpack == 10:
@@ -479,6 +522,9 @@ if ricominciamo == True:
 
         if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
             hai_perso()
+        
+        if pygame.sprite.spritecollide(uccello, all_enemies2, True):
+            hai_perso()
     
         for i in proiettili_dict:
  
@@ -495,6 +541,21 @@ if ricominciamo == True:
                             if nemici_life[a] == 0:
                                 nemico_attivo.kill()
                                 nemici_life.pop(a)
+                    
+                    else:
+                        pass
+
+            for b in nemici2_dict:
+                nemico2_attivo = nemici2_dict[b]
+                if nemico2_attivo.alive()== True:
+                    nemico2_attivo = nemici2_dict[b]
+            
+                    if pygame.sprite.spritecollide(nemico2_attivo, all_sprites, True):
+                        if nemici2_life:
+                            nemici2_life[b] -= 2
+                            if nemici2_life[b] == 0:
+                                nemico2_attivo.kill()
+                                nemici2_life.pop(b)
                     
                     else:
                         pass
@@ -537,7 +598,16 @@ if ricominciamo == True:
             else:
                 allpowerup = "vuoto"
                 powerup_attivo.kill()
-           
+        
+        for t in nemici2_dict:
+            nemico2_attivo = nemici2_dict[t]
+            
+            if nemico2_attivo.rect.x > 0:
+                allenemies2 = "pieno"
+                nemico2_attivo.rect.x -= 10
+            else:
+                allenemies2 = "vuoto"
+                nemico2_attivo.kill()
    
         for n in nemici_proiettili_dict:
             nemici_proiettile_attivo = nemici_proiettili_dict.get(n)
