@@ -25,20 +25,20 @@ uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
 
 
 ##ricavo le immagini necessarie##
-sfondo = pygame.image.load("sfondo_luna.png")
-base = pygame.image.load("base_corridoio.png")
-game_over = pygame.image.load("game_over.png")
-vita100 = pygame.image.load("vita_100%.png")
-vita50 = pygame.image.load("vita_50%.png")
-vita75 = pygame.image.load("vita_75%.png")
-vita25 = pygame.image.load("vita_25%.png")
-palla_di_neve = pygame.image.load("PalladiNeve.png")
-drone = pygame.image.load("Drone.png")
-scudo = pygame.image.load("Scudo.png")
-uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
+sfondo = pygame.image.load("images/sfondo_luna.png")
+base = pygame.image.load("images/base_corridoio.png")
+game_over = pygame.image.load("images/game_over.png")
+vita100 = pygame.image.load("images/vita_100%.png")
+vita50 = pygame.image.load("images/vita_50%.png")
+vita75 = pygame.image.load("images/vita_75%.png")
+vita25 = pygame.image.load("images/vita_25%.png")
+palla_di_neve = pygame.image.load("images/PalladiNeve.png")
+drone = pygame.image.load("images/Drone.png")
+scudo = pygame.image.load("images/Scudo.png")
+uccello.image = pygame.image.load("images/Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
-play_button = pygame.image.load("play_button.png")
-uccello.rect.update(0,0,50,190)
+play_button = pygame.image.load("images/play_button.png")
+uccello.rect.update(50,0,50,187)
 
 
 
@@ -49,7 +49,6 @@ VEL_AVANZ = 9
 
 
 
-#uccellox è inutile
 
 def inizializza(): 
     ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
@@ -155,7 +154,7 @@ def aggiorna():
 
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1150))
-    SCHERMO.blit(base, (basex,400))
+    SCHERMO.blit(base, (basex,200))
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
     SCHERMO.blit(surf_text, (600, 10))
     
@@ -244,7 +243,7 @@ def disegna_oggetti():
 
 
 def hai_perso():
-    pygame.mixer.music.load("sus.mp3")
+    pygame.mixer.music.load("sounds/sus.mp3")
     pygame.mixer.music.play(1, 0)
     SCHERMO.blit(game_over, (0,0))
     scritta_punteggio = "      total score: "+str(tempo)+"       "
@@ -303,16 +302,16 @@ if ricominciamo == True:
         keys=pygame.key.get_pressed()
     
 
-        if uccelloy == 550:
-            uccelloy = 550
-        elif uccelloy < 550: 
+        if uccelloy == 530:
+            uccelloy = 530
+        elif uccelloy < 530: 
             uccelloy += gravity
             gravity = 14
     
     
 
 
-        if keys[K_SPACE] and uccelloy > 549:
+        if keys[K_SPACE] and uccelloy > 529:
             salto =True
     
         if keys[K_ESCAPE]:
@@ -357,13 +356,13 @@ if ricominciamo == True:
 
             u = int(random.randrange(1,4))
             if u == 1:
-                spr_powerup.image = pygame.image.load("Scudo.png")
+                spr_powerup.image = pygame.image.load("images/Scudo.png")
                 type_powerup.update({n_M: "scudo"})
             elif u == 2:
-                spr_powerup.image = pygame.image.load("Drone.png")
+                spr_powerup.image = pygame.image.load("images/Drone.png")
                 type_powerup.update({n_M: "drone"})
             elif u == 3:
-                spr_powerup.image = pygame.image.load("PalladiNeve.png")
+                spr_powerup.image = pygame.image.load("images/PalladiNeve.png")
                 type_powerup.update({n_M: "palladineve"})
             spr_powerup.rect = spr_powerup.image.get_rect()
             spr_powerup.rect.topright= (SCHERMO.get_width()-10, random.randrange(300, 720))
@@ -378,7 +377,8 @@ if ricominciamo == True:
             n_N += 1
             hp = 4
             spr_ghost = pygame.sprite.Sprite(all_enemies1)
-            spr_ghost.image = pygame.image.load("uccello.png")
+            spr_ghost.image = pygame.image.load("images/Nemico.png")
+            
             spr_ghost.rect = spr_ghost.image.get_rect()
             spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(440, 600))
 
@@ -393,7 +393,7 @@ if ricominciamo == True:
             n_K += 1
             hp = 4
             spr_enemies = pygame.sprite.Sprite(all_enemies2)
-            spr_enemies.image = pygame.image.load("uccello.png")
+            spr_enemies.image = pygame.image.load("images/Nemico.png")
             spr_enemies.rect = spr_enemies.image.get_rect()
             spr_enemies.rect.topright= (SCHERMO.get_width()-30, random.randrange(340, 640))
 
@@ -414,7 +414,7 @@ if ricominciamo == True:
                 if nemico_attivo.alive() == True:
                     nemici_n_proiettile += 1
                     spr_proiettile = pygame.sprite.Sprite(proiettili_all_enemies)
-                    spr_proiettile.image = pygame.image.load("proiettile_nemico.png")
+                    spr_proiettile.image = pygame.image.load("images/proiettile_nemico.png")
                     spr_proiettile.rect = spr_proiettile.image.get_rect()
                     spr_proiettile.rect.topright = (nemici_dict[b].rect.x, nemici_dict[b].rect.y)
 
@@ -432,24 +432,25 @@ if ricominciamo == True:
        
             if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             
-                pygame.mixer.music.load("sparo.mp3")
+                pygame.mixer.music.load("sounds/sparo.mp3")
                 pygame.mixer.music.play(1, 0)
                 n_P += 1
                 spr_proiettile = pygame.sprite.Sprite(all_sprites)
-                spr_proiettile.image = pygame.image.load("proiettile.png")
+                spr_proiettile.image = pygame.image.load("images/proiettile.png")
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
             
-                #for i in range(700):
-                    #n_list += 1
-                    #traiettoria += 1
-                    #tupla = [traiettoria , uccelloy+40]
-                    #punti_dict.update({n_list: tupla})
 
-                #print(punti_dict)
-                #punti_dict.clear()
-                #n_list = 0
-                yproiettile = uccelloy+70
-                spr_proiettile.rect.topright = (200, yproiettile)
+                for i in range(700):
+                    n_list += 1
+                    traiettoria += 1
+                    tupla = [traiettoria , uccelloy+65]
+                    punti_dict.update({n_list: tupla})
+
+            #print(punti_dict)
+                punti_dict.clear()
+                n_list = 0
+
+                spr_proiettile.rect.topright = (250, uccelloy+65)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
@@ -492,17 +493,17 @@ if ricominciamo == True:
 
         if timerdrone_ == 1:
             spr_drone = pygame.sprite.Sprite(all_help)
-            spr_drone.image = pygame.image.load("DroneAmico.png")
+            spr_drone.image = pygame.image.load("images/DroneAmico.png")
             spr_drone.rect = spr_drone.image.get_rect()
             spr_drone.rect.topright = (50, 50)
         if timerpalladineve_ == 1:
             spr_palladineve = pygame.sprite.Sprite(all_help)
-            spr_palladineve.image = pygame.image.load("DroneAmico.png")
+            spr_palladineve.image = pygame.image.load("images/DroneAmico.png")
             spr_palladineve.rect = spr_palladineve.image.get_rect()
             spr_palladineve.rect.topright = (50, 50)
         if timerscudo_ == 1:
             spr_scudo = pygame.sprite.Sprite(all_help)
-            spr_scudo.image = pygame.image.load("DroneAmico.png")
+            spr_scudo.image = pygame.image.load("images/DroneAmico.png")
             spr_scudo.rect = spr_scudo.image.get_rect()
             spr_scudo.rect.topright = (50, 50)
 
@@ -637,3 +638,4 @@ if ricominciamo == True:
 
         aggiorna()
         disegna_oggetti()
+        
