@@ -38,7 +38,7 @@ scudo = pygame.image.load("Scudo.png")
 uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
 play_button = pygame.image.load("play_button.png")
-uccello.rect.update(30,0,50,190)
+uccello.rect.update(50,0,50,187)
 
 
 
