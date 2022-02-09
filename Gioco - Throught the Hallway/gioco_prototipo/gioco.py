@@ -49,7 +49,7 @@ VEL_AVANZ = 9
 
 
 
-
+#uccellox è inutile
 
 def inizializza(): 
     ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
@@ -380,7 +380,7 @@ if ricominciamo == True:
             spr_ghost = pygame.sprite.Sprite(all_enemies1)
             spr_ghost.image = pygame.image.load("uccello.png")
             spr_ghost.rect = spr_ghost.image.get_rect()
-            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(540, 640))
+            spr_ghost.rect.topright= (SCHERMO.get_width()-30, random.randrange(440, 600))
 
             nemici_dict.update({n_N: spr_ghost})
             nemici_life.update({n_N: hp})
@@ -439,17 +439,17 @@ if ricominciamo == True:
                 spr_proiettile.image = pygame.image.load("proiettile.png")
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
             
-                for i in range(700):
-                    n_list += 1
-                    traiettoria += 1
-                    tupla = [traiettoria , uccelloy+40]
-                    punti_dict.update({n_list: tupla})
+                #for i in range(700):
+                    #n_list += 1
+                    #traiettoria += 1
+                    #tupla = [traiettoria , uccelloy+40]
+                    #punti_dict.update({n_list: tupla})
 
                 #print(punti_dict)
-                punti_dict.clear()
-                n_list = 0
-
-                spr_proiettile.rect.topright = (200, uccelloy)
+                #punti_dict.clear()
+                #n_list = 0
+                yproiettile = uccelloy+70
+                spr_proiettile.rect.topright = (200, yproiettile)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
@@ -604,7 +604,7 @@ if ricominciamo == True:
             
             if nemico2_attivo.rect.x > 0:
                 allenemies2 = "pieno"
-                nemico2_attivo.rect.x -= 15                
+                nemico2_attivo.rect.x -= 10
             else:
                 allenemies2 = "vuoto"
                 nemico2_attivo.kill()
