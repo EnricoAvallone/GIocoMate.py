@@ -37,7 +37,7 @@ scudo = pygame.image.load("Scudo.png")
 uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
 play_button = pygame.image.load("play_button.png")
-uccello.rect.update(0,0,50,190)
+uccello.rect.update(30,0,50,190)
 
 
 
@@ -147,7 +147,7 @@ def aggiorna():
 
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-1150))
-    SCHERMO.blit(base, (basex,400))
+    SCHERMO.blit(base, (basex,200))
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
     SCHERMO.blit(surf_text, (600, 10))
     
@@ -276,16 +276,16 @@ if ricominciamo == True:
         keys=pygame.key.get_pressed()
     
 
-        if uccelloy == 550:
-            uccelloy = 550
-        elif uccelloy < 550: 
+        if uccelloy == 530:
+            uccelloy = 530
+        elif uccelloy < 530: 
             uccelloy += gravity
             gravity = 14
     
     
 
 
-        if keys[K_SPACE] and uccelloy > 549:
+        if keys[K_SPACE] and uccelloy > 529:
             salto =True
     
         if keys[K_ESCAPE]:
@@ -400,14 +400,14 @@ if ricominciamo == True:
                 for i in range(700):
                     n_list += 1
                     traiettoria += 1
-                    tupla = [traiettoria , uccelloy+40]
+                    tupla = [traiettoria , uccelloy+65]
                     punti_dict.update({n_list: tupla})
 
             #print(punti_dict)
                 punti_dict.clear()
                 n_list = 0
 
-                spr_proiettile.rect.topright = (200, uccelloy)
+                spr_proiettile.rect.topright = (250, uccelloy+65)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
