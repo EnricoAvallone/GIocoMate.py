@@ -1,4 +1,5 @@
 #importo le librerie
+from typing import Counter
 import pygame
 from pygame.locals import *
 import random
@@ -58,7 +59,7 @@ def inizializza():
     # - global power-up
     global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo
     # - global uccello
-    global uccellox, uccelloy, proiettili_dict, salto, gravity
+    global uccellox, uccelloy, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
     # - global sfondo
     global basex, sfondox
     # - global nemici 
@@ -140,7 +141,9 @@ def inizializza():
     dropscudo = False
     dropdrone = False
     droppalladineve = False
-
+    n_salti = 0
+    counter_salti = False
+    dimensioni = 0
     ##definisco il font e la grandezza dei testi##
     fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     
@@ -308,11 +311,12 @@ if ricominciamo == True:
             uccelloy += gravity
             gravity = 14
     
-    
 
+        if uccelloy > 528:
+            n_salti = 0
+            
 
-        if keys[K_SPACE] and uccelloy > 529:
-            salto =True
+        
     
         if keys[K_ESCAPE]:
             pygame.quit()
@@ -330,13 +334,7 @@ if ricominciamo == True:
                  
             
         
-        if salto == True:
 
-            if uccelloy > 300:
-                gravity = -15
-                uccelloy += gravity
-            else:
-                salto = False
     
         if tempo == 51:
             tempo_spawn1 = 4
@@ -421,14 +419,33 @@ if ricominciamo == True:
                     nemici_proiettili_dict.update({nemici_n_proiettile: spr_proiettile})
                     nemici_firerate = 0
                     sparo_nemici = False
-            
-        
+
+        if counter_salti == True:
+            if n_salti == 0:          
+                dimensioni = uccelloy-190
+            if n_salti == 1:          
+                dimensioni = uccelloy-120
+            n_salti +=1
+            salto = True
+
+            counter_salti = False
+
+        if salto == True:
+            if uccelloy > dimensioni:
+                gravity = -15
+                uccelloy += gravity
+            else:
+                dimensioni = 0
+                salto = False
+
 
 
 
         for event in pygame.event.get():
 
-        
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and n_salti < 2:
+                counter_salti =True
+            
        
             if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             
