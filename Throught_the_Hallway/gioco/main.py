@@ -26,6 +26,8 @@ uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
 
 
 ##ricavo le immagini necessarie##
+sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale_1.png")
+sfondo_iniziale2 = pygame.image.load("Sfondo_iniziale_2.png")
 sfondo = pygame.image.load("sfondo_luna.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
@@ -38,7 +40,6 @@ drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
 uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
-play_button = pygame.image.load("play_button.png")
 uccello.rect.update(50,0,50,187)
 
 
@@ -57,7 +58,7 @@ def inizializza():
 
     ##le rendo sempre accessibili##
     # - global power-up
-    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo
+    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo
     # - global uccello
     global uccellox, uccelloy, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
     # - global sfondo
@@ -126,7 +127,7 @@ def inizializza():
     n_list = 0
     punti_dict = {}
     traiettoria = 200
-    tempo_spawn1 = 5
+    tempo_spawn1 = 0
     tempo_spawn2 = 7
     powerup_dict = {}
     powerup_dict.clear()
@@ -144,6 +145,7 @@ def inizializza():
     n_salti = 0
     counter_salti = False
     dimensioni = 0
+    scudo = False
     ##definisco il font e la grandezza dei testi##
     fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
     
@@ -270,9 +272,8 @@ def hai_perso():
 def start():
     global ricominciamo, fnt
 
-    SCHERMO.blit(sfondo, (-800, -700))
-    SCHERMO.blit(play_button, (0,0))
-    
+    SCHERMO.blit(sfondo_iniziale1, (0, 0))
+
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
@@ -280,8 +281,10 @@ def start():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse = pygame.mouse.get_pos()
 
-                if 230 <  mouse[0] < 444:#x
-                    if 181 <  mouse[1] < 246:#y
+                if 613 <  mouse[0] < 784:#x
+                    if 243 <  mouse[1] < 333:#y
+                        SCHERMO.blit(sfondo_iniziale2, (0, 0))
+
                         inizializza()
                         aggiorna()
                         disegna_oggetti()
@@ -335,7 +338,8 @@ if ricominciamo == True:
             
         
 
-    
+        if tempo == 0:
+            tempo_spawn1 = 10
         if tempo == 51:
             tempo_spawn1 = 4
         if tempo == 100:
@@ -509,20 +513,24 @@ if ricominciamo == True:
 
 
         if timerdrone_ == 1:
+            scudo = True
             spr_drone = pygame.sprite.Sprite(all_help)
             spr_drone.image = pygame.image.load("DroneAmico.png")
             spr_drone.rect = spr_drone.image.get_rect()
             spr_drone.rect.topright = (50, 50)
         if timerpalladineve_ == 1:
+            scudo = True
             spr_palladineve = pygame.sprite.Sprite(all_help)
             spr_palladineve.image = pygame.image.load("DroneAmico.png")
             spr_palladineve.rect = spr_palladineve.image.get_rect()
             spr_palladineve.rect.topright = (50, 50)
         if timerscudo_ == 1:
+            scudo = True
             spr_scudo = pygame.sprite.Sprite(all_help)
             spr_scudo.image = pygame.image.load("DroneAmico.png")
             spr_scudo.rect = spr_scudo.image.get_rect()
             spr_scudo.rect.topright = (50, 50)
+        
 
         if timerdrone_ > 0:
             dropdrone = True
@@ -641,10 +649,11 @@ if ricominciamo == True:
                     nemici_allsprites = "vuoto"
                     nemici_proiettile_attivo.kill()
                 
-                if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True):
+                if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) and scudo == False:
                         nemici_proiettile_attivo.rect.x = 0
                         hai_perso()
-                    
+                if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) and scudo == True:
+                    scudo = False
                 else:
                     pass
 
