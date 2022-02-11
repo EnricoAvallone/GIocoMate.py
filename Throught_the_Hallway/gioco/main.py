@@ -6,7 +6,7 @@ import os
 from pygame.time import Clock
 
 #indirizzo il percorso alla cartella dove sono presenti le immagini
-os.chdir ("Throught_the_Hallway/gioco")
+os.chdir ("gioco/images")
 
 #avvio le librerie
 pygame.init()
