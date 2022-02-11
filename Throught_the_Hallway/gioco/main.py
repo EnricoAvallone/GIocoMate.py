@@ -302,7 +302,7 @@ if ricominciamo == True:
     while True:
         basex -= VEL_AVANZ
         sfondox -= VEL_AVANZ
-        if sfondox < -1400: sfondox = 0
+        if sfondox < -4200: sfondox = 0
         if basex < -2100: basex = 0
         
 
