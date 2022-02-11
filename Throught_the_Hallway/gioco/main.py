@@ -28,7 +28,7 @@ uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
 ##ricavo le immagini necessarie##
 sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale_1.png")
 sfondo_iniziale2 = pygame.image.load("Sfondo_iniziale_2.png")
-sfondo = pygame.image.load("sfondo_luna.png")
+sfondo = pygame.image.load("Sfondo_corridoio_1.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
 vita100 = pygame.image.load("vita_100%.png")
@@ -47,8 +47,8 @@ uccello.rect.update(50,0,50,187)
 
 #Costanti globali
 SCHERMO = pygame.display.set_mode((1400,800))
-FPS = 120
-VEL_AVANZ = 9
+FPS = 180
+VEL_AVANZ = 12
 
 
 
@@ -157,9 +157,10 @@ def inizializza():
 def aggiorna():
     pygame.display.update()
     pygame.time.Clock().tick(FPS)
-
+#200
+#9000
 def disegna_oggetti():
-    SCHERMO.blit(sfondo, (sfondox,-1150))
+    SCHERMO.blit(sfondo, (sfondox,0))
     SCHERMO.blit(base, (basex,200))
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
     SCHERMO.blit(surf_text, (600, 10))
@@ -301,7 +302,7 @@ if ricominciamo == True:
     while True:
         basex -= VEL_AVANZ
         sfondox -= VEL_AVANZ
-        if sfondox < -3328: sfondox = 0
+        if sfondox < -1400: sfondox = 0
         if basex < -2100: basex = 0
         
 
