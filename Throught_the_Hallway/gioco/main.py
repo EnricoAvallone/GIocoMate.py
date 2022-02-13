@@ -602,7 +602,7 @@ if ricominciamo == True:
             
             
 
-        if timerscudo_ == 10:
+        if timerscudo_ == 15:
             scudo = False
             dropscudo = False 
             timerscudo = False
