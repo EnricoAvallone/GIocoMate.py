@@ -24,11 +24,12 @@ proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
 personaggio = pygame.sprite.Group()#lo sprite del personaggio
 uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
 spr_scudo = pygame.sprite.Sprite(all_help)
+all_spada = pygame.sprite.Group()
 
 
 ##ricavo le immagini necessarie##
-sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale_1.png")
-sfondo_iniziale2 = pygame.image.load("Sfondo_iniziale_2.png")
+sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale.png")
+sfondo_iniziale2 = pygame.image.load("Sfondo_iniziale.png")
 sfondo = pygame.image.load("Sfondo_corridoio_1.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
@@ -39,6 +40,7 @@ vita25 = pygame.image.load("vita_25%.png")
 palla_di_neve = pygame.image.load("PalladiNeve.png")
 drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
+play_button = pygame.image.load("play_button.png")
 
 uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
@@ -71,13 +73,15 @@ def inizializza():
     # - global nemici 
     global  nemico, allsprites, allenemies2, nemici_dict, n_N, all_enemies1, nemici_life, n_K, all_enemies2, nemici2_dict, nemici2_life
     # - global orologi
-    global clock_nemici1, clock_jetpack, orologio_j,tempo, tempo_spawn1, clk_spawn_pu, tempo_spawn2, clock_nemici2
+    global clock_nemici1, clock_jetpack, orologio_j,tempo, tempo_spawn1, clk_spawn_pu, tempo_spawn2, clock_nemici2, clock_spada, orologio_s
     # - global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     # - global proiettili amici
     global n_P, all_sprites, punti_dict, traiettoria, n_list
 
     global surf_text, fnt, past
+
+    global spada_dict, allspada, n_S
 
     
     uccelloy = 500 #posizione personaggio ad inizio gioco
@@ -103,6 +107,9 @@ def inizializza():
     nemici_life.clear()
     proiettili_dict.clear()
     nemici2_life.clear()
+    spada_dict = {}
+    allspada = "vuoto"
+    all_spada.empty()
     
     ##TIMER##
     pygame.time.set_timer(pygame.USEREVENT, 1000) #ogni secondo avviene USEREVENT, utilizzo questo evento per far funzionare tutti i timer
@@ -118,6 +125,8 @@ def inizializza():
     timerscudo_ = 0
     timerpalladineve_ = 0
     timerdrone_ = 0
+    clock_spada = 0
+    orologio_s = False
     
     ##NOMI DICT##
     ##utilizzo delle variabili per dare un nome agli elementi da inserire nei dizionari
@@ -125,6 +134,7 @@ def inizializza():
     n_N= 0 #nome nemico 
     n_M = 0 #nome power-up
     n_K = 0 #nome nemici 2
+    n_S = 0
 
     gravity=0 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
@@ -252,7 +262,11 @@ def disegna_oggetti():
     else:
         proiettili_all_enemies.draw(SCHERMO)
 
-
+    if allspada == "vuoto":
+        all_spada.empty()
+        pass
+    else:
+        all_spada.draw(SCHERMO)
 
     
     all_enemies1.draw(SCHERMO)
@@ -310,32 +324,6 @@ def start():
 start()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if ricominciamo == True:
     while True:
         basex -= VEL_AVANZ
@@ -375,8 +363,8 @@ if ricominciamo == True:
                     gravity =-5
                     uccelloy += gravity
                  
-            
-        
+
+
 
         if tempo == 0:
             tempo_spawn1 = 10
@@ -502,6 +490,11 @@ if ricominciamo == True:
                 clock_nemici1 += 1
                 nemici_firerate += 1
                 clock_nemici2 += 1
+                if orologio_s == True:
+                    clock_spada += 1
+                    if clock_spada == 10:
+                        clock_spada = 0
+                        orologio_s = False
                 if orologio_j == True:
                     clock_jetpack += 1
                     if clock_jetpack == 10:
@@ -517,14 +510,18 @@ if ricominciamo == True:
                 if timerscudo == True:
                     timerscudo_ += 1
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                
+                #orologio_s = True
 
+                n_S += 1
+                spr_spada = pygame.sprite.Sprite(all_spada)
+                spr_spada.image = pygame.image.load("spada_prova.png")
+                spr_spada.rect = spr_spada.image.get_rect()
 
+                spr_spada.rect.topright = (450, uccelloy-100)
+                spada_dict.update({n_S : spr_spada})
 
-                   
-
-
-        
-        
         
     
         for i in proiettili_dict:
@@ -571,8 +568,24 @@ if ricominciamo == True:
                     
             else:
                 allsprites = "vuoto"
+            
 
+        for c in spada_dict:
+            spada_attivo = spada_dict[c]
+            
+            
+            if pygame.sprite.spritecollide(nemico2_attivo, all_spada, True):
+                nemico2_attivo.kill()
+                
+            else:
+                pass
 
+            if spada_attivo.rect.y < SCHERMO.get_width()-10:
+                allspada = "pieno"
+                spada_attivo.rect.y += 10        
+            else:
+                allspada = "vuoto"
+                spada_attivo.kill()
 
         if timerdrone_ > 0 and timerdrone_ < 10:
             dropdrone = True
@@ -602,7 +615,7 @@ if ricominciamo == True:
             
             
 
-        if timerscudo_ == 15:
+        if timerscudo_ == 10:
             scudo = False
             dropscudo = False 
             timerscudo = False
@@ -690,8 +703,8 @@ if ricominciamo == True:
                     nemici_proiettile_attivo.rect.x = 0
 
                 
-                if scudo == True and pygame.sprite.spritecollide(spr_scudo, all_enemies2, True):
-                    pass
+                #if scudo == True and pygame.sprite.spritecollide(spr_scudo, all_enemies2, True):
+                #    pass
 
                 if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) or pygame.sprite.spritecollide(uccello, all_enemies2, True):
                     nemici_proiettile_attivo.rect.x = 0
