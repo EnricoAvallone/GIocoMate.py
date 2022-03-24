@@ -29,7 +29,8 @@ all_spada = pygame.sprite.Group()
 
 ##ricavo le immagini necessarie##
 sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale.png")
-sfondo_iniziale2 = pygame.image.load("Sfondo_iniziale.png")
+play_notpressed = pygame.image.load("Tasto_Play_1.png")
+play_pressed = pygame.image.load("Tasto_Play_2.png")
 sfondo = pygame.image.load("Sfondo_corridoio_1.png")
 base = pygame.image.load("base_corridoio.png")
 game_over = pygame.image.load("game_over.png")
@@ -174,7 +175,7 @@ def aggiorna():
 #200
 #9000
 def disegna_oggetti():
-    SCHERMO.blit(sfondo, (sfondox,0))
+    SCHERMO.blit(sfondo, (sfondox,-80))
     SCHERMO.blit(base, (basex,200))
     
     uccello.rect.topright = ( 200 , uccelloy)
@@ -299,7 +300,7 @@ def start():
     global ricominciamo, fnt
 
     SCHERMO.blit(sfondo_iniziale1, (0, 0))
-
+    SCHERMO.blit(play_notpressed, (613,243))
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
@@ -309,7 +310,7 @@ def start():
 
                 if 613 <  mouse[0] < 784:#x
                     if 243 <  mouse[1] < 333:#y
-                        SCHERMO.blit(sfondo_iniziale2, (0, 0))
+                        SCHERMO.blit(play_pressed, (613, 243))
 
                         inizializza()
                         aggiorna()
@@ -328,7 +329,7 @@ if ricominciamo == True:
     while True:
         basex -= VEL_AVANZ
         sfondox -= VEL_AVANZ
-        if sfondox < -4200: sfondox = 0
+        if sfondox < -11200: sfondox = 0
         if basex < -2100: basex = 0
         
 
