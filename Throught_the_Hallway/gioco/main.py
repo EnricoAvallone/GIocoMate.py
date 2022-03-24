@@ -570,22 +570,22 @@ if ricominciamo == True:
                 allsprites = "vuoto"
             
 
-        for c in spada_dict:
-            spada_attivo = spada_dict[c]
+        #for c in spada_dict:
+         #   spada_attivo = spada_dict[c]
             
             
-            if pygame.sprite.spritecollide(nemico2_attivo, all_spada, True):
-                nemico2_attivo.kill()
-                
-            else:
-                pass
+          #  if pygame.sprite.spritecollide(nemico2_attivo, all_spada, True):
+           #     nemico2_attivo.kill()
 
-            if spada_attivo.rect.y < SCHERMO.get_width()-10:
-                allspada = "pieno"
-                spada_attivo.rect.y += 10        
-            else:
-                allspada = "vuoto"
-                spada_attivo.kill()
+            #else:
+             #   pass
+
+            #if spada_attivo.rect.y < SCHERMO():
+             #   allspada = "pieno"
+              #  spada_attivo.rect.y += 10
+            #else:
+             #   allspada = "vuoto"
+              #  spada_attivo.kill()
 
         if timerdrone_ > 0 and timerdrone_ < 10:
             dropdrone = True
