@@ -60,7 +60,7 @@ VEL_AVANZ = 12
 
 
 
-def inizializza(): 
+def inizializza():
     ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
     ## questa funzione serve anche a resettare tutte le variabili una volta restartato il gioco
 
@@ -274,7 +274,7 @@ def disegna_oggetti():
     all_enemies2.draw(SCHERMO)
 
 
-def hai_perso():
+def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
     SCHERMO.blit(game_over, (0,0))
@@ -709,7 +709,7 @@ if ricominciamo == True:
 
                 if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) or pygame.sprite.spritecollide(uccello, all_enemies2, True):
                     nemici_proiettile_attivo.rect.x = 0
-                    hai_perso()
+                    sconfitta()
                 
 
                 else:
