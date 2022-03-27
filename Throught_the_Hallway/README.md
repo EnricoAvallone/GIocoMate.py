@@ -32,6 +32,7 @@
     Il personaggio corre in un corridoio infinito e dovrà affrontare varie difese presenti nella casa bianca, se verrà colpito da una difesa morirà e verrà catturato dalle guardie.
     
     Durante la corsa potrà raccogliere i power-up che gli forniranno abilità particolari.
+    Il punteggio finale sarà dato dal tempo durante cui si è riusciti a sopravvivere.
 </br>
 
 ***
@@ -61,6 +62,12 @@
 </br>
 
 ***
+
+## Salvataggio Dati:
+    I dati che verranno salvati nel gioco sono: nome del giocatore e punteggio del giocatore.
+    Nome del giocatore e punteggio del giocatore verranno salvati da remoto ed il primo verrà salvato nella funzione "start", mentre il secondo nella funzione "sconfitta".
+    Il salvataggio da remoto di suddetti dati permetterà la creazione di una classifica globale di tutti i giocatori.
+</br>
 
 </br></br></br>
 # Utilizzo coniche
