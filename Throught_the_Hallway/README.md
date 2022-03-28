@@ -65,7 +65,8 @@
 
 ## Salvataggio Dati:
     I dati che verranno salvati nel gioco sono: nome del giocatore e punteggio del giocatore.
-    Nome del giocatore e punteggio del giocatore verranno salvati da remoto ed il primo verrà salvato nella funzione "start", mentre il secondo nella funzione "sconfitta".
+    Nome del giocatore e punteggio del giocatore verranno salvati da remoto su un database. Il primo verrà salvato nella funzione "start", mentre il secondo nella funzione "sconfitta".
+    I punteggi del giocatore verranno salvati anche in locale per creare una classifica personale dei migliori punteggi ottenuti.
     Il salvataggio da remoto di suddetti dati permetterà la creazione di una classifica globale di tutti i giocatori.
 </br>
 
