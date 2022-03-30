@@ -9,8 +9,10 @@
 2. [Trama](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#trama)
 3. [Svolgimento del gioco](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#svolgimento-del-gioco)
 4. [Comandi di gioco](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#comandi-di-gioco)
-4. [Power-up](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#power-up)
-5. [Utilizzo coniche](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#utilizzo-coniche)
+5. [Power-up](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#power-up)
+6. [Funzionamento blocchi](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#funzionamento-blocchi)
+7. [Salvataggio dati](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#salvataggio-dati)
+8. [Utilizzo coniche](https://github.com/EnricoAvallone/GiocoMate.py/tree/AvallonePy/Gioco%20-%20Throught%20the%20Hallway#utilizzo-coniche)
 
 </br>
 </br>
@@ -29,9 +31,9 @@
 
 ***
 ## Svolgimento del gioco: 
-    Il personaggio corre in un corridoio infinito e dovrà affrontare varie difese presenti nella casa bianca, se verrà colpito da una difesa morirà e verrà catturato dalle guardie.
+    Il personaggio corre in un corridoio infinito e dovrà affrontare varie difese presenti nella casa bianca, se verrà colpito da una difesa morirà e la partità verrà terminata.
     
-    Durante la corsa potrà raccogliere i power-up che gli forniranno abilità particolari.
+    Durante la corsa potrà raccogliere dei power-up che gli forniranno abilità particolari.
     Il punteggio finale sarà dato dal tempo durante cui si è riusciti a sopravvivere.
 </br>
 
@@ -40,11 +42,11 @@
 </br>
 
 + __Space-bar__ → salta
++ __Space-bar__ + __Space-bar__ → doppio salto
 + __J__ → jetpack (massimo 4 secondi poi si deve ricaricare)
 + __F__ → fire(spara)
-+ __P__ → powerup
 + __R__ → restart
-+ __E__ → (easter-egg)
++ __escape__ → esc(chiusura del gioco)
 </br>
 </br>
 
@@ -63,15 +65,38 @@
 
 ***
 
-## Salvataggio Dati:
-    I dati che verranno salvati nel gioco sono: nome del giocatore e punteggio del giocatore.
-    Nome del giocatore e punteggio del giocatore verranno salvati da remoto su un database. Il primo verrà salvato nella funzione "start", mentre il secondo nella funzione "sconfitta".
-    I punteggi del giocatore verranno salvati anche in locale per creare una classifica personale dei migliori punteggi ottenuti.
-    Il salvataggio da remoto di suddetti dati permetterà la creazione di una classifica globale di tutti i giocatori.
+## Funzionamento blocchi:
+
+### Start:
+    La prima funzione, che è poi quella che avvia tutto, è "start". Start carica sullo schermo l'immagine di sfondo iniziale e l'immagine del pulsante di avvio del gioco.
+    Se l'immagine del pulsante di avvio viene premuta con il tasto sinistro, grazie a start, si avvierà il gioco, verranno infatti eseguite le funzioni "inizializza", "disegna_oggetti" ed "aggiorna".
+    Inoltre la variabile "ricominciamo" passerà da "False" a "True", facendo così eseguere al programma il ciclo con tutte le funzioni interne del gioco.
+
+### Inizializza:
+    La funzione "inizializza" serve ad impostare le variabili globali che sono state usate in tutto il codice. 
+    Prima vengono definite con la funzione "globale" che le rende richiamabili in tutto il codice, e poi, in base al tipo, viene associato un valore ad ogni variabile.
+
+### Aggiorna e disegna_oggetti:
+    "aggiorna" e "disegna_oggetti" sono le due funzioni più importanti per il programma. La prima, nonostante sia semplice, serve ad aggiornare in continuazione lo schermo, mentre la seconda serve a far capire al programma quali immagini debbano comparire sullo schermo.
+    Queste due funzioni sono quindi complementari perché la prima è indispensabile affinché la seconda possa far apparire le immagini e creare quindi i movimenti che compongono il gioco.
+
+### Sconfitta:
+    La funzione "sconfitta" viene eseguita nel momento in cui lo sprite del personaggio comandato dal giocatore entra in contatto con uno sprite nemico. Questo avvenimento cambia la variabile "ricominciamo" da "True" a "False, interrompendo così il ciclo iniziato dalla funzione "start" e passando alla schermata di game over.
+    Nella schermata di game over viene poi mostrato, sempre dalla funzione "sconfitta", il punteggio totalizzato nella partita ed mostrerà anche la classifica personale e quella globale.
+
+
 </br>
 
+***
 
-</br></br></br>
+## Salvataggio dati:
+    I dati che verranno salvati nel gioco sono: nome del giocatore e punteggio del giocatore.
+    Nome del giocatore e punteggio del giocatore verranno salvati da remoto su un database. Il primo verrà salvato nella funzione "start", mentre il secondo nella funzione "sconfitta".
+    Il salvataggio da remoto di suddetti dati permetterà la creazione di una classifica globale di tutti i giocatori.
+    I punteggi del giocatore verranno salvati anche in locale per creare una classifica personale dei migliori punteggi ottenuti.
+</br>
+
+</br></br>
 # Utilizzo coniche
 
 
