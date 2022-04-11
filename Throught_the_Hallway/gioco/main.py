@@ -182,7 +182,7 @@ def disegna_oggetti():
     personaggio.draw(SCHERMO)
 
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
-    SCHERMO.blit(surf_text, (600, 10))
+    SCHERMO.blit(surf_text, (1310, 10))
 
     if dropdrone == True:
         all_help.draw(SCHERMO)
@@ -422,7 +422,7 @@ if ricominciamo == True:
                     spr_proiettile = pygame.sprite.Sprite(proiettili_all_enemies)
                     spr_proiettile.image = pygame.image.load("proiettile_nemico.png")
                     spr_proiettile.rect = spr_proiettile.image.get_rect()
-                    spr_proiettile.rect.topright = (nemici_dict[b].rect.x, nemici_dict[b].rect.y)
+                    spr_proiettile.rect.topright = (nemici_dict[b].rect.x, nemici_dict[b].rect.y + 37)
 
                     nemici_proiettili_dict.update({nemici_n_proiettile: spr_proiettile})
                     nemici_firerate = 0
@@ -622,7 +622,7 @@ if ricominciamo == True:
             timerscudo = False
             timerscudo_ = 0
 
-        if clk_spawn_pu== 30:
+        if clk_spawn_pu== 2:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
@@ -666,7 +666,7 @@ if ricominciamo == True:
             
             if powerup_attivo.rect.x > 0:
                 allpowerup = "pieno"
-                powerup_attivo.rect.x -= 5                
+                powerup_attivo.rect.x -= 10                
             else:
                 allpowerup = "vuoto"
                 powerup_attivo.kill()
