@@ -68,7 +68,7 @@ def inizializza():
     # - global power-up
     global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo
     # - global uccello
-    global uccellox, uccelloy, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
+    global uccellox, spiay, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
     # - global sfondo
     global basex, sfondox
     # - global nemici 
@@ -78,14 +78,14 @@ def inizializza():
     # - global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     # - global proiettili amici
-    global n_P, all_sprites, punti_dict, traiettoria, n_list
+    global n_P, all_sprites
 
     global surf_text, fnt, past
 
     global spada_dict, allspada, n_S
 
     
-    uccelloy = 500 #posizione personaggio ad inizio gioco
+    spiay = 500 #posizione personaggio ad inizio gioco
     basex = 0
     sfondox = 0
     proiettili_dict = {}
@@ -140,9 +140,6 @@ def inizializza():
     gravity=0 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
     nemici_n_proiettile= 0
-    n_list = 0
-    punti_dict = {}
-    traiettoria = 200
     tempo_spawn1 = 0
     tempo_spawn2 = 7
     powerup_dict = {}
@@ -178,7 +175,7 @@ def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-80))
     SCHERMO.blit(base, (basex,200))
     
-    uccello.rect.topright = ( 200 , uccelloy)
+    uccello.rect.topright = ( 200 , spiay)
     personaggio.draw(SCHERMO)
 
     surf_text = fnt.render(str(tempo), True, (255, 255, 0), None)
@@ -232,7 +229,7 @@ def disegna_oggetti():
                 SCHERMO.blit(vita25, (pos_x +4, pos_y-5))
     
     if scudo == True:
-        spr_scudo.rect.topright = (300, uccelloy-100)
+        spr_scudo.rect.topright = (300, spiay-100)
     elif scudo == False:
         spr_scudo.remove
 
@@ -331,39 +328,39 @@ if ricominciamo == True:
         sfondox -= VEL_AVANZ
         if sfondox < -11200: sfondox = 0
         if basex < -2100: basex = 0
-        
+
 
 
         keys=pygame.key.get_pressed()
-    
 
-        if uccelloy == 530:
-            uccelloy = 530
-        elif uccelloy < 530: 
-            uccelloy += gravity
+
+        if spiay == 530:
+            spiay = 530
+        elif spiay < 530: 
+            spiay += gravity
             gravity = 14
-    
 
-        if uccelloy > 528:
+
+        if spiay > 528:
             n_salti = 0
-            
 
-        
-    
+
+
+
         if keys[K_ESCAPE]:
             pygame.quit()
 
-        
+
         if keys[K_j]:
     
             if clock_jetpack < 3:
                 orologio_j = True
-                if uccelloy == 0:
-                    uccelloy = 0
-                if uccelloy > 0:
+                if spiay == 0:
+                    spiay = 0
+                if spiay > 0:
                     gravity =-5
-                    uccelloy += gravity
-                 
+                    spiay += gravity
+
 
 
 
@@ -401,7 +398,7 @@ if ricominciamo == True:
             spr_enemies = pygame.sprite.Sprite(all_enemies2)
             spr_enemies.image = pygame.image.load("Nemico.png")
             spr_enemies.rect = spr_enemies.image.get_rect()
-            spr_enemies.rect.topright= (SCHERMO.get_width()-30, random.randrange(340, 640))
+            spr_enemies.rect.topright= (SCHERMO.get_width()-30, random.randrange(340, 620))
 
             nemici2_dict.update({n_K: spr_enemies})
             nemici2_life.update({n_K: hp})
@@ -430,18 +427,18 @@ if ricominciamo == True:
 
         if counter_salti == True:
             if n_salti == 0:          
-                dimensioni = uccelloy-190
+                dimensioni = spiay-190
             if n_salti == 1:          
-                dimensioni = uccelloy-120
+                dimensioni = spiay-120
             n_salti +=1
             salto = True
 
             counter_salti = False
 
         if salto == True:
-            if uccelloy > dimensioni:
+            if spiay > dimensioni:
                 gravity = -15
-                uccelloy += gravity
+                spiay += gravity
             else:
                 dimensioni = 0
                 salto = False
@@ -465,17 +462,7 @@ if ricominciamo == True:
                 spr_proiettile.rect = spr_proiettile.image.get_rect()
             
 
-                for i in range(700):
-                    n_list += 1
-                    traiettoria += 1
-                    tupla = [traiettoria , uccelloy+65]
-                    punti_dict.update({n_list: tupla})
-
-            #print(punti_dict)
-                punti_dict.clear()
-                n_list = 0
-
-                spr_proiettile.rect.topright = (250, uccelloy+65)
+                spr_proiettile.rect.topright = (250, spiay+65)
                 proiettili_dict.update({n_P: spr_proiettile})
 
 
@@ -511,17 +498,17 @@ if ricominciamo == True:
                 if timerscudo == True:
                     timerscudo_ += 1
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+            #if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 
                 #orologio_s = True
 
-                n_S += 1
-                spr_spada = pygame.sprite.Sprite(all_spada)
-                spr_spada.image = pygame.image.load("spada_prova.png")
-                spr_spada.rect = spr_spada.image.get_rect()
+            #    n_S += 1
+             #   spr_spada = pygame.sprite.Sprite(all_spada)
+              #  spr_spada.image = pygame.image.load("spada_prova.png")
+               # spr_spada.rect = spr_spada.image.get_rect()
 
-                spr_spada.rect.topright = (450, uccelloy-100)
-                spada_dict.update({n_S : spr_spada})
+                #spr_spada.rect.topright = (450, spiay-100)
+                #spada_dict.update({n_S : spr_spada})
 
         
     
@@ -622,7 +609,7 @@ if ricominciamo == True:
             timerscudo = False
             timerscudo_ = 0
 
-        if clk_spawn_pu== 2:
+        if clk_spawn_pu== 30:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
