@@ -1,3 +1,154 @@
+class Retta:
+    def __init__(self, tipo="PARAMETRI", *args):
+        """
+        Il tipo è PARAMETRI per a, b, c; COEFFICIENTE per m e un punto; PUNTI per due punti
+        """
+        if tipo == "PARAMETRI":
+            self.__a = args[0]
+            self.__b = args[1]
+            self.__c = args[2]
+        elif tipo == "COEFFICIENTE":
+            self.__m = args[0]
+            self.__punto = args[1]
+
+            self.__a = -self.__m
+            self.__b = 1
+            self.__c = self.__m * self.__punto[0] - self.__punto[1]
+        elif tipo == "PUNTI":
+            self.__punto1 = args[0]
+            self.__punto2 = args[1]
+            self.__m = (self.__punto2[1] - self.__punto1[1]) / (self.__punto2[0] - self.__punto1[0])
+            self.__a = -self.__m
+            self.__b = 1
+            self.__c = -self.__punto1[0] + self.__punto1[1]
+        else:
+            raise Exception("Il tipo specificato non è un'opzione")
+
+    # PROPRIETA' DELLA RETTA
+    @property
+    def a(self):
+        return self.__a
+
+    @property
+    def b(self):
+        return self.__b
+
+    @property
+    def c(self):
+        return self.__c
+
+    @property
+    def m(self):
+        """
+        :returns: il coefficiente angolare
+        """
+        try:
+            return self.__m
+        except AttributeError:
+            if self.__b != 0:
+                return -self.__a / self.__b
+            else:  # Se b = 0, dai un errore
+                raise ZeroDivisionError
+
+    @property
+    def q(self):
+        """
+        :returns: l'intercetta
+        """
+        if self.__b != 0:
+            return -self.__c / self.__b
+        else:  # Se b = 0, dai un errore
+            raise ZeroDivisionError
+
+    def eqImplicita(self):
+        """
+        :returns: la stringa dell'equazione implicita
+        """
+        # PRIMO TERMINE
+        incognita_1 = f"{self.__a}x" if self.__a != 0 else ""
+        incognita_1 = f"x" if self.__a == 1 else incognita_1
+        incognita_1 = f"-x" if self.__a == -1 else incognita_1
+        incognita_1 = incognita_1 if self.__a <= 0 else f"+{incognita_1}"
+
+        # SECONDO TERMINE
+        incognita_2 = f"{self.__b}y" if self.__b != 0 else ""
+        incognita_2 = f"y" if self.__b == 1 else incognita_2
+        incognita_2 = f"-y" if self.__b == -1 else incognita_2
+        incognita_2 = incognita_2 if self.__b <= 0 else f"+{incognita_2}"
+
+        # TERMINE NOTO
+        noto = f"{self.__c}" if self.__c != 0 else ""
+        noto = noto if self.__c <= 0 else f"+{noto}"
+
+        return f"{incognita_1}{incognita_2}{noto}=0"
+
+    # FUNZIONI DELLA RETTA
+    def eqEsplicita(self):
+        """
+        :returns: la stringa dell'equazione esplicita
+        """
+        if self.__b == 0:
+            raise ZeroDivisionError
+
+        b = self.__b if self.__b >= 0 else -self.__b
+
+        # VARIABILE INDIPENDENTE
+        a = self.__a if self.__b >= 0 else -self.__a
+
+        ind = f"{a}/{b}x" if abs(self.__b) != 1 else f"{a}x"
+        ind = ind if abs(a/b) != 1 else f"x"
+        ind = ind if a <= 0 else f"+{ind}"
+        ind = ind if a != 0 else ""
+
+        # TERMINE NOTO
+        c = self.__c if self.__b >= 0 else -self.__c
+
+        noto = f"{c}/{b}" if abs(self.__b) != 1 else f"{c}"
+        noto = noto if c <= 0 else f"+{noto}"
+        noto = noto if c != 0 else ""
+
+        return f"y={ind}{noto}"
+
+    def trovaY(self, x):
+        """
+        :returns: la stringa dell'equazione esplicita
+        """
+        return round(self.__a / self.__b * x + self.__c / self.__b, 2)
+
+    def punti(self, n, m):
+        """
+        :returns: la stringa dell'equazione esplicita
+        """
+        return [(i, self.trovaY(i)) for i in range(min(n, m), max(n, m) + 1, 30)]
+
+    def intersezione(self, retta1):
+        if type(retta1) != Retta:
+            raise Exception("Per calcolare l'intersezione serve un altra retta")
+
+        if retta1.b == 0:
+            raise ZeroDivisionError
+
+        if -self.__a / self.__b == -retta1.a / retta1.b and -self.__c / self.__b != -retta1.c / retta1.b:
+            return None
+
+        if -self.__a / self.__b == -retta1.a / retta1.b and -self.__c / self.__b == -retta1.c / retta1.b:
+            return self
+
+        x = ((self.__c / self.__b) - (retta1.c / retta1.b)) / ((-self.__a / self.__b) + (retta1.a / retta1.b))
+        y = (-self.__a / self.__b) * x + (-self.__c / self.__b)
+        return round(x, 2), round(y, 2)
+
+
+
+
+
+
+
+#chiedere gruppo di italiano
+
+
+
+
 #importo le librerie
 from typing import Counter
 import pygame
@@ -55,10 +206,17 @@ spr_scudo.image = pygame.image.load("scudoamico.png")
 spr_scudo.rect = spr_scudo.image.get_rect()
 spr_scudo.rect.update(0,0,300,300)
 
+
 spr_drone = pygame.sprite.Sprite(all_help_drone)
 spr_drone.image = pygame.image.load("DroneAmico.png")
 spr_drone.rect = spr_drone.image.get_rect()
-spr_drone.rect.topright = (50, 50)
+spr_drone.rect.center = (100, 300)
+
+
+
+
+
+
 
 
 #Costanti globali
@@ -75,7 +233,7 @@ def inizializza():
 
     ##le rendo sempre accessibili##
     # - global power-up
-    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo, n_P_drone, proiettili_dict_drone
+    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo, n_P_drone, proiettili_dict_drone,l
     # - global uccello
     global uccellox, spiay, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
     # - global sfondo
@@ -93,7 +251,7 @@ def inizializza():
 
     global spada_dict, allspada, n_S
 
-    
+    l=0
     spiay = 500 #posizione personaggio ad inizio gioco
     basex = 0
     sfondox = 0
@@ -560,7 +718,11 @@ if ricominciamo == True:
             if event.type == pygame.QUIT:
                     pygame.quit()
 
-            if event.type == pygame.USEREVENT: 
+            if event.type == pygame.USEREVENT:
+                x1, y1 = float(spr_drone.rect.centerx), float(spr_drone.rect.centery)
+                x2, y2 = (1300), (random.randrange(0, 160))
+                retta = Retta("PUNTI", (x1, y1), (x2, y2))
+                linea = retta.punti(100,2000) 
                 clk_spawn_pu += 1
                 tempo += 1
                 clock_nemici1 += 1
@@ -610,21 +772,27 @@ if ricominciamo == True:
                     
             else:
                 allsprites = "vuoto"
-
+        
         if dropdrone == True:
-            for d in proiettili_dict_drone:
- 
-                proiettile_attivo_drone = proiettili_dict_drone[d]                    
 
+            for d in proiettili_dict_drone:
+        
+                proiettile_attivo_drone = proiettili_dict_drone[d]
                 if proiettile_attivo_drone.rect.x < SCHERMO.get_width()-10:
                     allsprites = "pieno"
-                    proiettile_attivo_drone.rect.x += 30
+                    lineax = linea[0][0]
+                    lineay= linea[0][1]
+                    proiettile_attivo_drone.rect.centerx = lineax
+                    proiettile_attivo_drone.rect.centery = lineay
+                    linea.remove(linea[0])
+                    
                     
                 else:
+                    l = 0
                     allsprites = "vuoto"
 
 
-
+        
 
 
         for a in nemici_dict:
@@ -633,6 +801,7 @@ if ricominciamo == True:
        
             if nemico_attivo.alive()== True:
                 nemico_attivo = nemici_dict[a]
+                #x2, y2 = float(nemico_attivo.rect.centerx), float(nemico_attivo.rect.centery)
                 if pygame.sprite.spritecollide(nemico_attivo, all_sprites, True):
                     if nemici_life:
                         nemici_life[a] -= 2
@@ -779,7 +948,7 @@ if ricominciamo == True:
 
                 if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) or pygame.sprite.spritecollide(uccello, all_enemies2, True):
                     nemici_proiettile_attivo.rect.x = 0
-                    sconfitta()
+                    #sconfitta()
                 
 
                 else:
