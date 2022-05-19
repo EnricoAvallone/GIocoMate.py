@@ -2,9 +2,12 @@
 from typing import Counter
 import pygame
 from pygame.locals import *
-import random
 import os
 from pygame.time import Clock
+from genericpath import exists
+import redis
+import time
+import random
 
 #indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
@@ -12,8 +15,8 @@ os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 #avvio le librerie
 pygame.init()
 random.seed()
-
-
+r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
+#r.delete()
 ##definisco i gruppi di sprites##
 all_powerup = pygame.sprite.Group()#gli sprite dei powerups
 all_help_scudo = pygame.sprite.Group()
@@ -281,11 +284,56 @@ def disegna_oggetti():
 def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
-    SCHERMO.blit(game_over, (0,0))
+    SCHERMO.blit(sfondo_iniziale1, (0,0))
+    n_partita = time.asctime( time.localtime(time.time()) )
+    fnt_classifica = pygame.font.SysFont("Times New Roman", 20)
+    r.zadd(players, {(str(n_partita)): tempo})
     scritta_punteggio = "      total score: "+str(tempo)+"       "
-    print(scritta_punteggio)
-    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (255, 255, 0))
+    
+    print("\ntutte le partite:")
+    partita = r.zrange(players, 0, -1, withscores=True)
+    print(partita)
+
+    punteggio_migliore=partita[len(partita)-1][1]
+    scritta_punteggio_migliore = "punteggio migliore personale:"+str(punteggio_migliore)
+    
+    globale = "Classifica Globale"
+ 
+    r.zadd(globale, {(str(players)): punteggio_migliore})
+
+    classifica_globale = r.zrange(globale, 0, -1, desc=True, withscores=True)
+    u = 0
+    surf_text_globale_title = fnt_classifica.render("classifica globale:", True, (0, 0, 0), (255, 255, 255))
+    SCHERMO.blit(surf_text_globale_title, (150, 410))
+
+    if len(classifica_globale) <= 10:
+        for i in range(0,len(classifica_globale)):
+            scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 255, 255))
+            u += 20
+            SCHERMO.blit(surf_text_globale, (150, (420+u)))
+    else:
+        for i in range(0,10):
+            scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 255, 255))
+            u += 20
+            SCHERMO.blit(surf_text_globale, (150, (420+u)))
+    
+
+
+
+
+    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (189, 189, 189))
+    surf_text_migliore = fnt.render(scritta_punteggio_migliore, True, (0, 0, 0), (189, 189, 189))
+    print("\n\n\n",r.keys())
     SCHERMO.blit(surf_text, (150, 270))
+    SCHERMO.blit(surf_text_migliore, (150, 350))
+    
+
+
+
+
+
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
@@ -301,8 +349,30 @@ def sconfitta():
 #inizializzo Variabili
 ### Ciclo Principale ###
 def start():
-    global ricominciamo, fnt
+    global ricominciamo, fnt, players
+    domanda = input("\nsei un utente già registrato? si/no:")
 
+    if domanda == "si":
+        while True: 
+            username="TTH_"+input("\ninserisci username:")
+        #controllo se l'username esiste
+            if r.exists(username) == 1:
+                print("\n\nBentornato", username,"apri la scheda di pygame per iniziare a giocare...")
+                break
+            else:
+                print("utente non esistente...")
+    elif domanda == "no":
+        while True: 
+            username="TTH_"+input("\ninserisci l'username che desideri:")
+        #controllo se l'username esiste
+            if r.exists(username) == 1:
+                print("l'username già esiste, prova a modificarlo")
+            else:   
+                print("\nsei stato registrato con il nome:", username,"\n\napri la scheda di pygame per iniziare a giocare...")
+                break
+
+
+    players = username
     SCHERMO.blit(sfondo_iniziale1, (0, 0))
     SCHERMO.blit(play_notpressed, (613,243))
     aggiorna()
