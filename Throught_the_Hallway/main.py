@@ -1,3 +1,14 @@
+#importo le librerie
+from typing import Counter
+import pygame
+from pygame.locals import *
+import os
+from pygame.time import Clock
+from genericpath import exists
+import redis
+import time
+import random
+
 class Retta:
     def __init__(self, tipo="PARAMETRI", *args):
         """
@@ -168,20 +179,6 @@ class Button():
 
 #chiedere gruppo di italiano
 
-
-
-
-#importo le librerie
-from typing import Counter
-import pygame
-from pygame.locals import *
-import os
-from pygame.time import Clock
-from genericpath import exists
-import redis
-import time
-import random
-
 #indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 
@@ -207,41 +204,47 @@ all_spada = pygame.sprite.Group()
 
 
 ##ricavo le immagini necessarie##
-sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale.png")
-play_notpressed = pygame.image.load("Tasto_Play_1.png")
-play_pressed = pygame.image.load("Tasto_Play_2.png")
-sfondo = pygame.image.load("Sfondo_corridoio_1.png")
-base = pygame.image.load("base_corridoio.png")
-game_over = pygame.image.load("game_over.png")
-vita100 = pygame.image.load("vita_100%.png")
-vita50 = pygame.image.load("vita_50%.png")
-vita75 = pygame.image.load("vita_75%.png")
-vita25 = pygame.image.load("vita_25%.png")
-palla_di_neve = pygame.image.load("PalladiNeve.png")
-drone = pygame.image.load("Drone.png")
-scudo = pygame.image.load("Scudo.png")
-play_button = pygame.image.load("play_button.png")
-options_notpressed = pygame.image.load("Tasto_Menu_1.png")
-options_pressed = pygame.image.load("Tasto_Menu_2.png")
-sfondo_prova = pygame.image.load("sfondo_luna.png")
 
-uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
-uccello.rect = uccello.image.get_rect()
-uccello.rect.update(50,0,50,187)
+def image_load():
+    global sfondo_iniziale1, play_notpressed, play_pressed, sfondo, base, game_over 
+    global vita50, vita100, vita75, vita25, palla_di_neve, drone, scudo, play_button
+    global spr_drone, spr_scudo, options_notpressed, options_pressed, sfondo_prova
 
-spr_scudo = pygame.sprite.Sprite(all_help_scudo)
-spr_scudo.image = pygame.image.load("scudoamico.png")
-spr_scudo.rect = spr_scudo.image.get_rect()
-spr_scudo.rect.update(0,0,300,300)
+    sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale.png")
+    play_notpressed = pygame.image.load("Tasto_Play_1.png")
+    play_pressed = pygame.image.load("Tasto_Play_2.png")
+    sfondo = pygame.image.load("Sfondo_corridoio_1.png")
+    base = pygame.image.load("base_corridoio.png")
+    game_over = pygame.image.load("game_over.png")
+    vita100 = pygame.image.load("vita_100%.png")
+    vita50 = pygame.image.load("vita_50%.png")
+    vita75 = pygame.image.load("vita_75%.png")
+    vita25 = pygame.image.load("vita_25%.png")
+    palla_di_neve = pygame.image.load("PalladiNeve.png")
+    drone = pygame.image.load("Drone.png")
+    scudo = pygame.image.load("Scudo.png")
+    play_button = pygame.image.load("play_button.png")
+    options_notpressed = pygame.image.load("Tasto_Menu_1.png")
+    options_pressed = pygame.image.load("Tasto_Menu_2.png")
+    sfondo_prova = pygame.image.load("sfondo_luna.png")
+
+    uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
+    uccello.rect = uccello.image.get_rect()
+    uccello.rect.update(50,0,50,187)
+
+    spr_scudo = pygame.sprite.Sprite(all_help_scudo)
+    spr_scudo.image = pygame.image.load("scudoamico.png")
+    spr_scudo.rect = spr_scudo.image.get_rect()
+    spr_scudo.rect.update(0,0,300,300)
 
 
-spr_drone = pygame.sprite.Sprite(all_help_drone)
-spr_drone.image = pygame.image.load("DroneAmico.png")
-spr_drone.rect = spr_drone.image.get_rect()
-spr_drone.rect.center = (100, 300)
+    spr_drone = pygame.sprite.Sprite(all_help_drone)
+    spr_drone.image = pygame.image.load("DroneAmico.png")
+    spr_drone.rect = spr_drone.image.get_rect()
+    spr_drone.rect.center = (100, 300)
 
 
-
+image_load()
 
 
 
@@ -559,72 +562,40 @@ def sconfitta():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-def chiedi_nome():
-    global domanda, username, players
+
+
+
     
-    domanda = input("\nsei un utente già registrato? si/no:")
-    if domanda == "si":
-        while True: 
-            username="TTH_"+input("\ninserisci username:")
-        #controllo se l'username esiste
-            if r.exists(username) == 1:
-                print("\n\nBentornato", username,"apri la scheda di pygame per iniziare a giocare...")
-                break
-            else:
-                print("utente non esistente...")
-                domanda2 = input("\nsei sicuro di essere già registrato? ")
-                if domanda2 == "si":
-                    pass
-                elif domanda2 == "no":
-                    chiedi_nome()
-                else:
-                    print("scusa non ho capito")
-                    chiedi_nome()
-    elif domanda == "no":
-        while True: 
-            username="TTH_"+input("\ninserisci l'username che desideri:")
-        #controllo se l'username esiste
-            if r.exists(username) == 1:
-                print("l'username già esiste, prova a modificarlo")
-                domanda3 = input("\nsei sicuro di non essere già registrato? ")
-                if domanda3 == "si":
-                    pass
-                elif domanda3 == "no":
-                    chiedi_nome()
-                else:
-                    print("scusa non ho capito")
-                    chiedi_nome()
-            else:   
-                print("\nsei stato registrato con il nome:", username,"\n\napri la scheda di pygame per iniziare a giocare...")
-                break
-    else:
-        chiedi_nome()
-    players = username
-
-
 #inizializzo Variabili
 ### Ciclo Principale ###
 def start():
-    global ricominciamo, fnt
+    global ricominciamo, fnt, players
 
-    chiedi_nome()
+    
+    font = pygame.font.Font(None, 32)
+    smaller_font = pygame.font.Font(None, 20)
+    input_box = pygame.Rect(100, 200, 140, 32)
+    color_inactive = pygame.Color('white')
+    color_active = pygame.Color('dodgerblue2')
+    color = color_inactive
+    active = False
+    text = "user"+str(os.getuid())
+    inserisci_username_title = font.render("inserisci username:", True, pygame.Color('gray27'))
+    inserisci_username_subtitle = smaller_font.render("", True, pygame.Color('gray27'))
 
-    SCHERMO.blit(sfondo_iniziale1, (0, 0))
-    play_button.update()
-    options_button.update()
+
+
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-            if event.type == pygame.QUIT:
-                pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 MENU_MOUSE_POS = pygame.mouse.get_pos()
                 if play_button.checkForInput(MENU_MOUSE_POS):
                     SCHERMO.blit(play_pressed, (613, 293))
+                    username=("TTH_"+text)
+                    players = username
                     inizializza()
                     aggiorna()
                     disegna_oggetti()
@@ -633,6 +604,66 @@ def start():
                     SCHERMO.blit(options_pressed, (583, 130))
                     aggiorna()
                     options()
+
+                # If the user clicked on the input_box rect.
+                if input_box.collidepoint(event.pos):
+                    # Toggle the active variable.
+                    text = ""
+                    active = not active
+                else:
+                    username=("TTH_"+text)
+                    if r.exists(username) == 1:
+                        inserisci_username_subtitle = smaller_font.render("utente già registrato", True, pygame.Color('gray50'))
+                    else:
+                        inserisci_username_subtitle = smaller_font.render("nuovo utente", True, pygame.Color('gray50'))
+                    
+                    active = False
+                # Change the current color of the input box.
+                color = color_active if active else color_inactive
+            
+            if event.type == pygame.KEYDOWN:
+                if active:
+                    if event.key == pygame.K_RETURN:
+                        username=("TTH_"+text)
+                        if r.exists(username) == 1:
+                            inserisci_username_subtitle = smaller_font.render("utente già registrato", True, pygame.Color('gray50'))
+                            color = pygame.Color("yellow")
+                        else:
+                            inserisci_username_subtitle = smaller_font.render("nuovo utente", True, pygame.Color('gray50'))
+                            color = pygame.Color("green")
+
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                    else:
+                        text += event.unicode
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+
+        # Render the current text.
+        txt_surface = font.render(text, True, color)
+        # Resize the box if the text is too long.
+        width = max(200, txt_surface.get_width()+10)
+        input_box.w = width
+        #text.
+        SCHERMO.blit(sfondo_iniziale1, (0, 0))
+        play_button.update()
+        options_button.update()
+        SCHERMO.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        SCHERMO.blit(inserisci_username_title, (input_box.x, input_box.y-25))
+        SCHERMO.blit(inserisci_username_subtitle, (input_box.x, input_box.y+40))
+
+        #input_box
+        pygame.draw.rect(SCHERMO, color, input_box, 2)
+
+        pygame.display.flip()
+        
+
+            
 
 
 start()
