@@ -139,7 +139,29 @@ class Retta:
         return round(x, 2), round(y, 2)
 
 
+#si crea la classe button per i bottoni utilizzati nel menu di gioco 
+class Button():
+    #, text_input, font, base_color, hovering_color
+    def __init__(self, immagine, pos):
+        self.immagine = immagine
+        self.__x_pos = pos[0]
+        self.__y_pos = pos[1]
+        #self.font = font
+        #self.base_color, self.hovering_color = base_color, hovering_color
+        #self.text_input = text_input
+        #self.text = self.font.render(self.text_input, True, self.base_color)
+        #if self.immagine == None:
+        #    self.immagine = self.text
+        self.rect = self.immagine.get_rect(center= (self.__x_pos, self.__y_pos))
+        #self.text_rect = self.text.get_rect(center= (self.__x_pos, self.__y_pos))
 
+    def update(self):
+        SCHERMO.blit(self.immagine, self.rect)
+
+    def checkForInput(self, position):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+            return True
+        return False
 
 
 
@@ -166,6 +188,8 @@ os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 #avvio le librerie
 pygame.init()
 random.seed()
+#93.145.175.242-63213
+#10.255.237.221-6379
 r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
 #r.delete()
 ##definisco i gruppi di sprites##
@@ -173,6 +197,7 @@ all_powerup = pygame.sprite.Group()#gli sprite dei powerups
 all_help_scudo = pygame.sprite.Group()
 all_help_drone = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
+all_sprites2 = pygame.sprite.Group()#gli sprite dei proiettili del drone
 all_enemies1 = pygame.sprite.Group()#gli sprite dei nemici
 all_enemies2 = pygame.sprite.Group()#gli sprite dei nemici 2
 proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
@@ -196,6 +221,9 @@ palla_di_neve = pygame.image.load("PalladiNeve.png")
 drone = pygame.image.load("Drone.png")
 scudo = pygame.image.load("Scudo.png")
 play_button = pygame.image.load("play_button.png")
+options_notpressed = pygame.image.load("Tasto_Menu_1.png")
+options_pressed = pygame.image.load("Tasto_Menu_2.png")
+sfondo_prova = pygame.image.load("sfondo_luna.png")
 
 uccello.image = pygame.image.load("Protagonista con Jetpack.png") #assegno l'immagine in questo modo poichè il personaggio è sottoforma di sprite
 uccello.rect = uccello.image.get_rect()
@@ -239,13 +267,13 @@ def inizializza():
     # - global sfondo
     global basex, sfondox
     # - global nemici 
-    global  nemico, allsprites, allenemies2, nemici_dict, n_N, all_enemies1, nemici_life, n_K, all_enemies2, nemici2_dict, nemici2_life
+    global  nemico, allenemies2, nemici_dict, n_N, all_enemies1, nemici_life, n_K, all_enemies2, nemici2_dict, nemici2_life
     # - global orologi
     global clock_nemici1, clock_jetpack, orologio_j,tempo, tempo_spawn1, clk_spawn_pu, tempo_spawn2, clock_nemici2, clock_spada, orologio_s
     # - global proiettili nemici
     global nemici_proiettili_dict, nemici_allsprites, nemici_firerate, sparo_nemici, proiettili_all_enemies, nemici_n_proiettile
     # - global proiettili amici
-    global n_P, all_sprites
+    global n_P, all_sprites, all_sprites2, allsprites, allsprites2
 
     global surf_text, fnt, past
 
@@ -265,9 +293,11 @@ def inizializza():
     nemico = False
     salto = False
     allsprites= "vuoto"
+    allsprites2= "vuoto"
     nemici_allsprites = "vuoto"
     allenemies2= "vuoto"
     all_sprites.empty()
+    all_sprites2.empty()
     all_enemies1.empty()
     all_enemies2.empty()
     proiettili_all_enemies.empty()
@@ -335,6 +365,21 @@ def inizializza():
     
 
 
+play_button = Button(immagine=play_notpressed, pos=(700, 343)) 
+
+options_button = Button(immagine=options_notpressed, pos=(700, 243))
+
+def options():
+    OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+    
+    while True:
+        SCHERMO.blit(sfondo_prova, (0,0))
+        for event in pygame.event.get():
+            if event.type == pygame.quit():
+                pygame.qui()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.quit()
+        aggiorna()
     
 
 def aggiorna():
@@ -407,6 +452,12 @@ def disegna_oggetti():
     else:
         all_sprites.draw(SCHERMO)
 
+    if allsprites2== "vuoto":
+        all_sprites2.empty()
+        pass
+    else:
+        all_sprites2.draw(SCHERMO)
+
     #icone powerups
     if allpowerup == "vuoto":
         all_powerup.empty()
@@ -442,11 +493,12 @@ def disegna_oggetti():
 def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
-    SCHERMO.blit(sfondo_iniziale1, (0,0))
+    SCHERMO.blit(pygame.display.fill(128, 222, 234))
+    #SCHERMO.blit(sfondo_iniziale1, (0,0))
     n_partita = time.asctime( time.localtime(time.time()) )
     fnt_classifica = pygame.font.SysFont("Times New Roman", 20)
     r.zadd(players, {(str(n_partita)): tempo})
-    scritta_punteggio = "      total score: "+str(tempo)+"       "
+    scritta_punteggio = "total score: "+str(tempo)
     
     print("\ntutte le partite:")
     partita = r.zrange(players, 0, -1, withscores=True)
@@ -461,32 +513,35 @@ def sconfitta():
 
     classifica_globale = r.zrange(globale, 0, -1, desc=True, withscores=True)
     u = 0
-    surf_text_globale_title = fnt_classifica.render("classifica globale:", True, (0, 0, 0), (255, 255, 255))
-    SCHERMO.blit(surf_text_globale_title, (150, 410))
+    surf_text_globale_title = fnt_classifica.render("classifica globale:", True, (0, 0, 0), (121, 85, 62))
+    SCHERMO.blit(surf_text_globale_title, (620, 510))
 
     if len(classifica_globale) <= 10:
         for i in range(0,len(classifica_globale)):
             scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
-            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 255, 255))
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (121, 85, 62))
             u += 20
-            SCHERMO.blit(surf_text_globale, (150, (420+u)))
+            SCHERMO.blit(surf_text_globale, (600, (520+u)))
     else:
         for i in range(0,10):
             scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
-            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 255, 255))
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 111, 67))
             u += 20
-            SCHERMO.blit(surf_text_globale, (150, (420+u)))
+            SCHERMO.blit(surf_text_globale, (600, (520+u)))
     
 
 
 
 
     surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (189, 189, 189))
-    surf_text_migliore = fnt.render(scritta_punteggio_migliore, True, (0, 0, 0), (189, 189, 189))
+    surf_text_migliore = fnt.render(scritta_punteggio_migliore, True, (0, 0, 0), (128, 222, 234))
+    surf_text_title = fnt.render("Through The Hallway", True, (0, 0, 0), (128, 222, 234))
+    surf_text_perso = fnt.render("HAI PERSO", True, (0, 0, 0))
     print("\n\n\n",r.keys())
-    SCHERMO.blit(surf_text, (150, 270))
-    SCHERMO.blit(surf_text_migliore, (150, 350))
-    
+    SCHERMO.blit(surf_text, (580, 270))
+    SCHERMO.blit(surf_text_migliore, (430, 370))
+    SCHERMO.blit(surf_text_title, (0,0))
+    SCHERMO.blit(surf_text_perso, (600, 100))
 
 
 
@@ -504,12 +559,10 @@ def sconfitta():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-#inizializzo Variabili
-### Ciclo Principale ###
-def start():
-    global ricominciamo, fnt, players
+def chiedi_nome():
+    global domanda, username, players
+    
     domanda = input("\nsei un utente già registrato? si/no:")
-
     if domanda == "si":
         while True: 
             username="TTH_"+input("\ninserisci username:")
@@ -519,39 +572,67 @@ def start():
                 break
             else:
                 print("utente non esistente...")
+                domanda2 = input("\nsei sicuro di essere già registrato? ")
+                if domanda2 == "si":
+                    pass
+                elif domanda2 == "no":
+                    chiedi_nome()
+                else:
+                    print("scusa non ho capito")
+                    chiedi_nome()
     elif domanda == "no":
         while True: 
             username="TTH_"+input("\ninserisci l'username che desideri:")
         #controllo se l'username esiste
             if r.exists(username) == 1:
                 print("l'username già esiste, prova a modificarlo")
+                domanda3 = input("\nsei sicuro di non essere già registrato? ")
+                if domanda3 == "si":
+                    pass
+                elif domanda3 == "no":
+                    chiedi_nome()
+                else:
+                    print("scusa non ho capito")
+                    chiedi_nome()
             else:   
                 print("\nsei stato registrato con il nome:", username,"\n\napri la scheda di pygame per iniziare a giocare...")
                 break
-
-
+    else:
+        chiedi_nome()
     players = username
+
+
+#inizializzo Variabili
+### Ciclo Principale ###
+def start():
+    global ricominciamo, fnt
+
+    chiedi_nome()
+
     SCHERMO.blit(sfondo_iniziale1, (0, 0))
-    SCHERMO.blit(play_notpressed, (613,243))
+    play_button.update()
+    options_button.update()
     aggiorna()
     ricominciamo = False
     while not ricominciamo:
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse = pygame.mouse.get_pos()
-
-                if 613 <  mouse[0] < 784:#x
-                    if 243 <  mouse[1] < 333:#y
-                        SCHERMO.blit(play_pressed, (613, 243))
-
-                        inizializza()
-                        aggiorna()
-                        disegna_oggetti()
-                        ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
             if event.type == pygame.QUIT:
                 pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                MENU_MOUSE_POS = pygame.mouse.get_pos()
+                if play_button.checkForInput(MENU_MOUSE_POS):
+                    SCHERMO.blit(play_pressed, (613, 293))
+                    inizializza()
+                    aggiorna()
+                    disegna_oggetti()
+                    ricominciamo = True
+                if options_button.checkForInput(MENU_MOUSE_POS):
+                    SCHERMO.blit(options_pressed, (583, 130))
+                    aggiorna()
+                    options()
 
 
 start()
@@ -703,7 +784,7 @@ if ricominciamo == True:
                     pygame.mixer.music.load("sparo.mp3")
                     pygame.mixer.music.play(1, 0)
                     n_P_drone += 1
-                    spr_proiettile_drone = pygame.sprite.Sprite(all_sprites)
+                    spr_proiettile_drone = pygame.sprite.Sprite(all_sprites2)
                     spr_proiettile_drone.image = pygame.image.load("proiettile.png")
                     spr_proiettile_drone.rect = spr_proiettile_drone.image.get_rect()
 
@@ -779,7 +860,7 @@ if ricominciamo == True:
         
                 proiettile_attivo_drone = proiettili_dict_drone[d]
                 if proiettile_attivo_drone.rect.x < SCHERMO.get_width()-10:
-                    allsprites = "pieno"
+                    allsprites2 = "pieno"
                     lineax = linea[0][0]
                     lineay= linea[0][1]
                     proiettile_attivo_drone.rect.centerx = lineax
@@ -789,7 +870,7 @@ if ricominciamo == True:
                     
                 else:
                     l = 0
-                    allsprites = "vuoto"
+                    allsprites2 = "vuoto"
 
 
         
@@ -861,12 +942,12 @@ if ricominciamo == True:
             timerscudo = False
             timerscudo_ = 0
 
-        if clk_spawn_pu== 10:
+        if clk_spawn_pu== 30:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
 
-            #u = int(random.randrange(1,4))
+            
             u = int(random.randrange(1,3))
             if u == 1:
                 spr_powerup.image = pygame.image.load("Scudo.png")
@@ -948,7 +1029,7 @@ if ricominciamo == True:
 
                 if pygame.sprite.spritecollide(uccello, proiettili_all_enemies, True) or pygame.sprite.spritecollide(uccello, all_enemies2, True):
                     nemici_proiettile_attivo.rect.x = 0
-                    #sconfitta()
+                    sconfitta()
                 
 
                 else:
