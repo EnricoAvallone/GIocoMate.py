@@ -372,17 +372,8 @@ play_button = Button(immagine=play_notpressed, pos=(700, 343))
 
 options_button = Button(immagine=options_notpressed, pos=(700, 243))
 
-def options():
-    OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+ 
     
-    while True:
-        SCHERMO.blit(sfondo_prova, (0,0))
-        for event in pygame.event.get():
-            if event.type == pygame.quit():
-                pygame.qui()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                pygame.quit()
-        aggiorna()
     
 
 def aggiorna():
@@ -496,8 +487,8 @@ def disegna_oggetti():
 def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
-    SCHERMO.blit(pygame.display.fill(128, 222, 234))
-    #SCHERMO.blit(sfondo_iniziale1, (0,0))
+    
+    SCHERMO.blit(sfondo_iniziale1, (0,0))
     n_partita = time.asctime( time.localtime(time.time()) )
     fnt_classifica = pygame.font.SysFont("Times New Roman", 20)
     r.zadd(players, {(str(n_partita)): tempo})
@@ -557,6 +548,10 @@ def sconfitta():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 inizializza()
                 ricominciamo = True
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                start()
+                inizializza()
+                ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
             if event.type == pygame.QUIT:
@@ -564,6 +559,7 @@ def sconfitta():
 
 
 
+    
 
     
 #inizializzo Variabili
@@ -579,10 +575,10 @@ def start():
     color_active = pygame.Color('dodgerblue2')
     color = color_inactive
     active = False
-    text = "user"+str(os.getuid())
+    text = " "
     inserisci_username_title = font.render("inserisci username:", True, pygame.Color('gray27'))
     inserisci_username_subtitle = smaller_font.render("", True, pygame.Color('gray27'))
-
+    error_username_subtitle = smaller_font.render("", True, pygame.Color('gray27'))
 
 
     aggiorna()
@@ -591,19 +587,22 @@ def start():
         for event in pygame.event.get():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                MENU_MOUSE_POS = pygame.mouse.get_pos()
-                if play_button.checkForInput(MENU_MOUSE_POS):
-                    SCHERMO.blit(play_pressed, (613, 293))
-                    username=("TTH_"+text)
-                    players = username
-                    inizializza()
-                    aggiorna()
-                    disegna_oggetti()
-                    ricominciamo = True
-                if options_button.checkForInput(MENU_MOUSE_POS):
-                    SCHERMO.blit(options_pressed, (583, 130))
-                    aggiorna()
-                    options()
+                
+                if play_button.checkForInput(event.pos):
+                    if text == " ":
+                        error_username_subtitle = smaller_font.render("inserisci prima l'username", True, pygame.Color('gray27'))
+                        
+                    else:
+                        SCHERMO.blit(play_pressed, (613, 293))
+                        username=("TTH_"+text)
+                        players = username
+                        inizializza()
+                        aggiorna()
+                        disegna_oggetti()
+                        ricominciamo = True
+                
+                        
+                    
 
                 # If the user clicked on the input_box rect.
                 if input_box.collidepoint(event.pos):
@@ -620,6 +619,22 @@ def start():
                     active = False
                 # Change the current color of the input box.
                 color = color_active if active else color_inactive
+
+                if options_button.checkForInput(event.pos):
+                    SCHERMO.blit(options_pressed, (612, 207))
+                    aggiorna()
+                    SCHERMO.fill((30, 30, 30))
+                    torna_menu_title = font.render('premi "m" per tornare al menù', True, pygame.Color('gray50'))
+                    SCHERMO.blit(torna_menu_title, (540, 500))
+                    aggiorna()
+                    ricominciamo1 = False 
+                    while not ricominciamo1:    
+  
+                        for event in pygame.event.get():
+                            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                                pygame.quit()
+                            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                                ricominciamo1 = True
             
             if event.type == pygame.KEYDOWN:
                 if active:
@@ -643,6 +658,7 @@ def start():
             if event.type == pygame.QUIT:
                 pygame.quit()
         
+        
 
         # Render the current text.
         txt_surface = font.render(text, True, color)
@@ -656,6 +672,7 @@ def start():
         SCHERMO.blit(txt_surface, (input_box.x+5, input_box.y+5))
         SCHERMO.blit(inserisci_username_title, (input_box.x, input_box.y-25))
         SCHERMO.blit(inserisci_username_subtitle, (input_box.x, input_box.y+40))
+        SCHERMO.blit(error_username_subtitle, (617, 400))
 
         #input_box
         pygame.draw.rect(SCHERMO, color, input_box, 2)
