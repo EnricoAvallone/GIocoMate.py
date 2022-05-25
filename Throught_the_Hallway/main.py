@@ -201,6 +201,7 @@ proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
 personaggio = pygame.sprite.Group()#lo sprite del personaggio
 uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
 all_spada = pygame.sprite.Group()
+text = " "
 
 
 ##ricavo le immagini necessarie##
@@ -549,7 +550,7 @@ def sconfitta():
                 inizializza()
                 ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
-                start()
+                start(username)
                 inizializza()
                 ricominciamo = True
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -564,7 +565,7 @@ def sconfitta():
     
 #inizializzo Variabili
 ### Ciclo Principale ###
-def start():
+def start(text):
     global ricominciamo, fnt, players
 
     
@@ -575,13 +576,13 @@ def start():
     color_active = pygame.Color('dodgerblue2')
     color = color_inactive
     active = False
-    text = " "
     inserisci_username_title = font.render("inserisci username:", True, pygame.Color('gray27'))
     inserisci_username_subtitle = smaller_font.render("", True, pygame.Color('gray27'))
     error_username_subtitle = smaller_font.render("", True, pygame.Color('gray27'))
 
 
     aggiorna()
+    global username
     ricominciamo = False
     while not ricominciamo:
         for event in pygame.event.get():
@@ -594,8 +595,8 @@ def start():
                         
                     else:
                         SCHERMO.blit(play_pressed, (613, 293))
-                        username=("TTH_"+text)
-                        players = username
+                        username= text
+                        players = ("TTH_"+username)
                         inizializza()
                         aggiorna()
                         disegna_oggetti()
@@ -610,8 +611,7 @@ def start():
                     text = ""
                     active = not active
                 else:
-                    username=("TTH_"+text)
-                    if r.exists(username) == 1:
+                    if r.exists(("TTH_"+text)) == 1:
                         inserisci_username_subtitle = smaller_font.render("utente già registrato", True, pygame.Color('gray50'))
                     else:
                         inserisci_username_subtitle = smaller_font.render("nuovo utente", True, pygame.Color('gray50'))
@@ -639,8 +639,8 @@ def start():
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
-                        username=("TTH_"+text)
-                        if r.exists(username) == 1:
+                        
+                        if r.exists(("TTH_"+text)) == 1:
                             inserisci_username_subtitle = smaller_font.render("utente già registrato", True, pygame.Color('gray50'))
                             color = pygame.Color("yellow")
                         else:
@@ -683,7 +683,7 @@ def start():
             
 
 
-start()
+start(text)
 
 
 if ricominciamo == True:
