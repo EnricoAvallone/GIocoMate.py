@@ -1,4 +1,3 @@
-#importo le librerie
 from typing import Counter
 import pygame
 from pygame.locals import *
@@ -148,9 +147,7 @@ class Retta:
         x = ((self.__c / self.__b) - (retta1.c / retta1.b)) / ((-self.__a / self.__b) + (retta1.a / retta1.b))
         y = (-self.__a / self.__b) * x + (-self.__c / self.__b)
         return round(x, 2), round(y, 2)
-
-
-#si crea la classe button per i bottoni utilizzati nel menu di gioco 
+ 
 class Button():
     #, text_input, font, base_color, hovering_color
     def __init__(self, immagine, pos):
@@ -175,36 +172,40 @@ class Button():
         return False
 
 
-
-
-#chiedere gruppo di italiano
-
 #indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
+
+r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
+#93.145.175.242-63213
+#10.255.237.221-6379
+#r.delete()
+
 
 #avvio le librerie
 pygame.init()
 random.seed()
-#93.145.175.242-63213
-#10.255.237.221-6379
-r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
-#r.delete()
-##definisco i gruppi di sprites##
-all_powerup = pygame.sprite.Group()#gli sprite dei powerups
-all_help_scudo = pygame.sprite.Group()
-all_help_drone = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
-all_sprites2 = pygame.sprite.Group()#gli sprite dei proiettili del drone
-all_enemies1 = pygame.sprite.Group()#gli sprite dei nemici
-all_enemies2 = pygame.sprite.Group()#gli sprite dei nemici 2
-proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
-personaggio = pygame.sprite.Group()#lo sprite del personaggio
-uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
-all_spada = pygame.sprite.Group()
-text = " "
+
+#Costanti globali
+SCHERMO = pygame.display.set_mode((1400,800))
+FPS = 180
+VEL_AVANZ = 12
 
 
-##ricavo le immagini necessarie##
+def sprite_groups():
+    global all_powerup, all_help_scudo, all_help_drone, all_sprites, all_sprites2
+    global all_enemies1, all_enemies2, proiettili_all_enemies, personaggio, uccello, all_spada
+
+    all_powerup = pygame.sprite.Group()#gli sprite dei powerups
+    all_help_scudo = pygame.sprite.Group()
+    all_help_drone = pygame.sprite.Group()
+    all_sprites = pygame.sprite.Group()#gli sprite dei proiettili amici
+    all_sprites2 = pygame.sprite.Group()#gli sprite dei proiettili del drone
+    all_enemies1 = pygame.sprite.Group()#gli sprite dei nemici
+    all_enemies2 = pygame.sprite.Group()#gli sprite dei nemici 2
+    proiettili_all_enemies = pygame.sprite.Group()#gli sprite dei proiettili nemici
+    personaggio = pygame.sprite.Group()#lo sprite del personaggio
+    uccello = pygame.sprite.Sprite(personaggio)#assegno lo sprite al gruppo
+    all_spada = pygame.sprite.Group()
 
 def image_load():
     global sfondo_iniziale1, play_notpressed, play_pressed, sfondo, base, game_over 
@@ -243,21 +244,6 @@ def image_load():
     spr_drone.image = pygame.image.load("DroneAmico.png")
     spr_drone.rect = spr_drone.image.get_rect()
     spr_drone.rect.center = (100, 300)
-
-
-image_load()
-
-
-
-
-
-#Costanti globali
-SCHERMO = pygame.display.set_mode((1400,800))
-FPS = 180
-VEL_AVANZ = 12
-
-
-
 
 def inizializza():
     ##creo/inizializzo quasi tutte le variabili che andrò ad usare nel codice 
@@ -366,22 +352,11 @@ def inizializza():
     scudo = False
     ##definisco il font e la grandezza dei testi##
     fnt = pygame.font.SysFont("Times New Roman", 40) #numeri punteggio in alto a destra
-    
-
-
-play_button = Button(immagine=play_notpressed, pos=(700, 343)) 
-
-options_button = Button(immagine=options_notpressed, pos=(700, 243))
-
- 
-    
-    
 
 def aggiorna():
     pygame.display.update()
     pygame.time.Clock().tick(FPS)
-#200
-#9000
+
 def disegna_oggetti():
     SCHERMO.blit(sfondo, (sfondox,-80))
     SCHERMO.blit(base, (basex,200))
@@ -484,7 +459,6 @@ def disegna_oggetti():
     all_enemies1.draw(SCHERMO)
     all_enemies2.draw(SCHERMO)
 
-
 def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
@@ -558,17 +532,11 @@ def sconfitta():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-
-
-    
-
-    
-#inizializzo Variabili
-### Ciclo Principale ###
 def start(text):
     global ricominciamo, fnt, players
 
-    
+    play_button = Button(immagine=play_notpressed, pos=(700, 343)) 
+    options_button = Button(immagine=options_notpressed, pos=(700, 243))
     font = pygame.font.Font(None, 32)
     smaller_font = pygame.font.Font(None, 20)
     input_box = pygame.Rect(100, 200, 140, 32)
@@ -590,7 +558,7 @@ def start(text):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 
                 if play_button.checkForInput(event.pos):
-                    if text == " ":
+                    if text == " " or text == "":
                         error_username_subtitle = smaller_font.render("inserisci prima l'username", True, pygame.Color('gray27'))
                         
                     else:
@@ -678,12 +646,11 @@ def start(text):
         pygame.draw.rect(SCHERMO, color, input_box, 2)
 
         pygame.display.flip()
-        
+                 
 
-            
-
-
-start(text)
+sprite_groups()
+image_load()
+start(" ")
 
 
 if ricominciamo == True:
