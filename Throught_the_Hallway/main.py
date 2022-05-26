@@ -126,10 +126,7 @@ class Retta:
         return round(self.__a / self.__b * x + self.__c / self.__b, 2)
 
     def punti(self, n, m):
-        """
-        :returns: la stringa dell'equazione esplicita
-        """
-        return [(i, self.trovaY(i)) for i in range(min(n, m), max(n, m) + 1, 30)]
+        return [(i, self.trovaY(i)) for i in range(int(n), int(m) + 500, 20)]
 
     def intersezione(self, retta1):
         if type(retta1) != Retta:
@@ -176,14 +173,14 @@ class Button():
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 
 r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
-#93.145.175.242-63213
-#10.255.237.221-6379
+#casa - 93.145.175.242 - 63213
+#scuola - 10.255.237.221 - 6379
 #r.delete()
-
 
 #avvio le librerie
 pygame.init()
 random.seed()
+clk = pygame.time.Clock()
 
 #Costanti globali
 SCHERMO = pygame.display.set_mode((1400,800))
@@ -251,7 +248,7 @@ def inizializza():
 
     ##le rendo sempre accessibili##
     # - global power-up
-    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo, n_P_drone, proiettili_dict_drone,l
+    global power_up, shuffle_pu, powerup_dict, n_M, all_powerup, allpowerup, spawn, type_powerup, timerdrone, timerpalladineve, timerscudo, timerdrone_, timerpalladineve_, timerscudo_, droppalladineve, dropdrone, dropscudo, scudo, n_P_drone, proiettili_dict_drone,l, rette_dict_drone, n_R_drone
     # - global uccello
     global uccellox, spiay, proiettili_dict, salto, gravity, n_salti, counter_salti, dimensioni
     # - global sfondo
@@ -275,6 +272,7 @@ def inizializza():
     sfondox = 0
     proiettili_dict = {}
     proiettili_dict_drone = {}
+    rette_dict_drone = {}
     nemici_proiettili_dict = {}
     nemici_dict = {}
     nemici_life = {}
@@ -302,6 +300,7 @@ def inizializza():
     
     ##TIMER##
     pygame.time.set_timer(pygame.USEREVENT, 1000) #ogni secondo avviene USEREVENT, utilizzo questo evento per far funzionare tutti i timer
+    pygame.time.set_timer(pygame.USEREVENT_DROPFILE, 200)
     clock_nemici1 = 0 #per determinare ogni quanto spawnino i nemici
     clock_nemici2 = 0 #per determinare ogni quanto spawnino i nemici
     clock_jetpack = 0 #per determinare il tempo di utilizzo del jetpack
@@ -325,6 +324,8 @@ def inizializza():
     n_M = 0 #nome power-up
     n_K = 0 #nome nemici 2
     n_S = 0
+    n_R_drone = 0 #nome retta drone
+    
 
     gravity=0 #la velocità con cui il personaggio cade inizialmente
     sparo_nemici = False #quando diventa True (tramite "nemici_firerate") i nemici sparano
@@ -416,17 +417,17 @@ def disegna_oggetti():
         spr_scudo.remove
 
 
+
     if allsprites == "vuoto":
         all_sprites.empty()
         pass
     else:
         all_sprites.draw(SCHERMO)
 
-    if allsprites2== "vuoto":
-        all_sprites2.empty()
-        pass
-    else:
+    if dropdrone == True:
         all_sprites2.draw(SCHERMO)
+    else:
+        all_sprites2.empty()
 
     #icone powerups
     if allpowerup == "vuoto":
@@ -794,19 +795,7 @@ if ricominciamo == True:
                 spr_proiettile.rect.topright = (250, spiay+65)
                 proiettili_dict.update({n_P: spr_proiettile})
 
-            if dropdrone == True:
-                if event.type == pygame.USEREVENT:
-                    pygame.mixer.music.load("sparo.mp3")
-                    pygame.mixer.music.play(1, 0)
-                    n_P_drone += 1
-                    spr_proiettile_drone = pygame.sprite.Sprite(all_sprites2)
-                    spr_proiettile_drone.image = pygame.image.load("proiettile.png")
-                    spr_proiettile_drone.rect = spr_proiettile_drone.image.get_rect()
-
-                    spr_proiettile_drone.rect.topright = (spr_drone.rect.x, spr_drone.rect.y)
-                    proiettili_dict_drone.update({n_P_drone: spr_proiettile_drone})
-
-
+            
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     inizializza()
@@ -815,10 +804,6 @@ if ricominciamo == True:
                     pygame.quit()
 
             if event.type == pygame.USEREVENT:
-                x1, y1 = float(spr_drone.rect.centerx), float(spr_drone.rect.centery)
-                x2, y2 = (1300), (random.randrange(0, 160))
-                retta = Retta("PUNTI", (x1, y1), (x2, y2))
-                linea = retta.punti(100,2000) 
                 clk_spawn_pu += 1
                 tempo += 1
                 clock_nemici1 += 1
@@ -856,8 +841,44 @@ if ricominciamo == True:
                 #spr_spada.rect.topright = (450, spiay-100)
                 #spada_dict.update({n_S : spr_spada})
 
-        
-    
+            if dropdrone == True:
+                if event.type == pygame.USEREVENT_DROPFILE:
+
+                        nemico_mira = nemici_dict[len(nemici_dict)]
+                        x1, y1 = (0, 300)
+                        x2, y2 = (1400), (random.randrange(0, 160))
+                        retta = Retta("PUNTI", (x1, y1), (x2, y2))
+                        linea = retta.punti(x1+100,x2) 
+                        pygame.mixer.music.load("sparo.mp3")
+                        pygame.mixer.music.play(1, 0)
+                        
+                        spr_proiettile_drone = pygame.sprite.Sprite(all_sprites2)
+                        spr_proiettile_drone.image = pygame.image.load("proiettile.png")
+                        spr_proiettile_drone.rect = spr_proiettile_drone.image.get_rect()
+                        
+                        n_P_drone += 1
+                        n_R_drone +=1
+
+                    
+                        proiettili_dict_drone.update({n_P_drone: spr_proiettile_drone})
+                        rette_dict_drone.update({n_R_drone: linea})
+
+        if dropdrone == True:
+
+                for d in proiettili_dict_drone:
+
+                    proiettile_attivo_drone = proiettili_dict_drone[d]
+                    retta_attiva_drone = rette_dict_drone[d]
+
+                    if proiettile_attivo_drone.rect.x < SCHERMO.get_width():    
+                        allsprites2 = "pieno"
+                        lineax = retta_attiva_drone[0][0]
+                        lineay= retta_attiva_drone[0][1]
+                        proiettile_attivo_drone.rect.center = lineax,lineay
+                        retta_attiva_drone.pop(0)
+
+          
+
         for i in proiettili_dict:
  
             proiettile_attivo = proiettili_dict[i]                    
@@ -869,24 +890,35 @@ if ricominciamo == True:
             else:
                 allsprites = "vuoto"
         
-        if dropdrone == True:
 
-            for d in proiettili_dict_drone:
+                    
+                    
         
-                proiettile_attivo_drone = proiettili_dict_drone[d]
-                if proiettile_attivo_drone.rect.x < SCHERMO.get_width()-10:
-                    allsprites2 = "pieno"
-                    lineax = linea[0][0]
-                    lineay= linea[0][1]
-                    proiettile_attivo_drone.rect.centerx = lineax
-                    proiettile_attivo_drone.rect.centery = lineay
-                    linea.remove(linea[0])
-                    
-                    
-                else:
-                    l = 0
-                    allsprites2 = "vuoto"
+        for a in nemici_dict:
 
+            nemico_attivo = nemici_dict[a]
+       
+            if nemico_attivo.alive()== True:
+                nemico_attivo = nemici_dict[a]
+                #x2, y2 = float(nemico_attivo.rect.centerx), float(nemico_attivo.rect.centery)
+                if pygame.sprite.spritecollide(nemico_attivo, all_sprites2, True):
+                    if nemici_life:
+                        nemici_life[a] -= 1
+                        if nemici_life[a] <= 0:
+                            nemico_attivo.kill()
+                            nemici_life.pop(a)
+
+        for b in nemici2_dict:
+            nemico2_attivo = nemici2_dict[b]
+
+            if nemico2_attivo.alive()== True:
+                nemico2_attivo = nemici2_dict[b]
+                if pygame.sprite.spritecollide(nemico2_attivo, all_sprites2, True):
+                    if nemici2_life:
+                        nemici2_life[b] -= 1
+                        if nemici2_life[b] <= 0:
+                            nemico2_attivo.kill()
+                            nemici2_life.pop(b)
 
         
 
@@ -901,7 +933,7 @@ if ricominciamo == True:
                 if pygame.sprite.spritecollide(nemico_attivo, all_sprites, True):
                     if nemici_life:
                         nemici_life[a] -= 2
-                        if nemici_life[a] == 0:
+                        if nemici_life[a] <= 0:
                             nemico_attivo.kill()
                             nemici_life.pop(a)
 
@@ -913,7 +945,7 @@ if ricominciamo == True:
                 if pygame.sprite.spritecollide(nemico2_attivo, all_sprites, True):
                     if nemici2_life:
                         nemici2_life[b] -= 2
-                        if nemici2_life[b] == 0:
+                        if nemici2_life[b] <= 0:
                             nemico2_attivo.kill()
                             nemici2_life.pop(b)
             
@@ -957,7 +989,7 @@ if ricominciamo == True:
             timerscudo = False
             timerscudo_ = 0
 
-        if clk_spawn_pu== 30:
+        if clk_spawn_pu== 10:
             clk_spawn_pu = 0
             n_M += 1
             spr_powerup = pygame.sprite.Sprite(all_powerup)
