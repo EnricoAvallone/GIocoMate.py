@@ -177,6 +177,7 @@ r = redis.StrictRedis(host="10.255.237.221", port=6379,password='1357642rVi0', d
 #scuola - 10.255.237.221 - 6379
 #r.delete()
 
+
 #avvio le librerie
 pygame.init()
 random.seed()
@@ -207,9 +208,10 @@ def sprite_groups():
 def image_load():
     global sfondo_iniziale1, play_notpressed, play_pressed, sfondo, base, game_over 
     global vita50, vita100, vita75, vita25, palla_di_neve, drone, scudo, play_button
-    global spr_drone, spr_scudo, options_notpressed, options_pressed, sfondo_prova
+    global spr_drone, spr_scudo, options_notpressed, options_pressed, sfondo_prova, sfondo_finale
 
     sfondo_iniziale1 = pygame.image.load("Sfondo_iniziale.png")
+    sfondo_finale = pygame.image.load("Sfondo_finale.png")
     play_notpressed = pygame.image.load("Tasto_Play_1.png")
     play_pressed = pygame.image.load("Tasto_Play_2.png")
     sfondo = pygame.image.load("Sfondo_corridoio_1.png")
@@ -464,9 +466,9 @@ def sconfitta():
     pygame.mixer.music.load("sus.mp3")
     pygame.mixer.music.play(1, 0)
     
-    SCHERMO.blit(sfondo_iniziale1, (0,0))
+    SCHERMO.blit(sfondo_finale, (0,0))
     n_partita = time.asctime( time.localtime(time.time()) )
-    fnt_classifica = pygame.font.SysFont("Times New Roman", 20)
+    fnt_classifica = pygame.font.SysFont("Times New Roman", 25)
     r.zadd(players, {(str(n_partita)): tempo})
     scritta_punteggio = "total score: "+str(tempo)
     
@@ -475,7 +477,7 @@ def sconfitta():
     print(partita)
 
     punteggio_migliore=partita[len(partita)-1][1]
-    scritta_punteggio_migliore = "punteggio migliore personale:"+str(punteggio_migliore)
+    scritta_punteggio_migliore = "Record: "+str(int(punteggio_migliore))
     
     globale = "Classifica Globale"
  
@@ -483,35 +485,31 @@ def sconfitta():
 
     classifica_globale = r.zrange(globale, 0, -1, desc=True, withscores=True)
     u = 0
-    surf_text_globale_title = fnt_classifica.render("classifica globale:", True, (0, 0, 0), (121, 85, 62))
-    SCHERMO.blit(surf_text_globale_title, (620, 510))
+    surf_text_globale_title = fnt.render("classifica globale", True, (0, 0, 0))
+    SCHERMO.blit(surf_text_globale_title, (560, 500))
 
     if len(classifica_globale) <= 10:
         for i in range(0,len(classifica_globale)):
             scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
-            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (121, 85, 62))
-            u += 20
-            SCHERMO.blit(surf_text_globale, (600, (520+u)))
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0))
+            u += 25
+            SCHERMO.blit(surf_text_globale, (560, (520+u)))
     else:
         for i in range(0,10):
             scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
-            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0), (255, 111, 67))
-            u += 20
-            SCHERMO.blit(surf_text_globale, (600, (520+u)))
+            surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0))
+            u += 25
+            SCHERMO.blit(surf_text_globale, (560, (520+u)))
     
 
 
 
 
-    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0), (189, 189, 189))
-    surf_text_migliore = fnt.render(scritta_punteggio_migliore, True, (0, 0, 0), (128, 222, 234))
-    surf_text_title = fnt.render("Through The Hallway", True, (0, 0, 0), (128, 222, 234))
-    surf_text_perso = fnt.render("HAI PERSO", True, (0, 0, 0))
+    surf_text = fnt.render(scritta_punteggio, True, (0, 0, 0))
+    surf_text_migliore = fnt.render(scritta_punteggio_migliore, True, (0, 0, 0))
     print("\n\n\n",r.keys())
     SCHERMO.blit(surf_text, (580, 270))
-    SCHERMO.blit(surf_text_migliore, (430, 370))
-    SCHERMO.blit(surf_text_title, (0,0))
-    SCHERMO.blit(surf_text_perso, (600, 100))
+    SCHERMO.blit(surf_text_migliore, (590, 400))
 
 
 
@@ -524,7 +522,7 @@ def sconfitta():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 inizializza()
                 ricominciamo = True
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
                 start(username)
                 inizializza()
                 ricominciamo = True
