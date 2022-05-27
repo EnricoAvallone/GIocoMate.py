@@ -172,7 +172,7 @@ class Button():
 #indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 
-r = redis.StrictRedis(host="93.145.175.242", port=63213,password='1357642rVi0', db=0)
+r = redis.StrictRedis(host="10.255.237.221", port=6379,password='1357642rVi0', db=0)
 #casa - 93.145.175.242 - 63213
 #scuola - 10.255.237.221 - 6379
 #r.delete()
@@ -853,7 +853,7 @@ if ricominciamo == True:
                         pygame.mixer.music.play(1, 0)
                         
                         spr_proiettile_drone = pygame.sprite.Sprite(all_sprites2)
-                        spr_proiettile_drone.image = pygame.image.load("proiettile.png")
+                        spr_proiettile_drone.image = pygame.image.load("Proiettile_3.png")
                         spr_proiettile_drone.rect = spr_proiettile_drone.image.get_rect()
                         
                         n_P_drone += 1
