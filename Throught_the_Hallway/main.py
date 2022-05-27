@@ -172,7 +172,7 @@ class Button():
 #indirizzo il percorso alla cartella dove sono presenti le immagini
 os.chdir(os.getcwd()+"/Throught_the_Hallway/images")
 
-r = redis.StrictRedis(host="10.255.237.221", port=6379,password='1357642rVi0', db=0)
+r = redis.StrictRedis(host="10.255.237.221", port=6379,password='1357642rVi0', db=0, charset=("utf-8"))
 #casa - 93.145.175.242 - 63213
 #scuola - 10.255.237.221 - 6379
 #r.delete()
@@ -490,7 +490,8 @@ def sconfitta():
 
     if len(classifica_globale) <= 10:
         for i in range(0,len(classifica_globale)):
-            scritta_classifica = str(i+1)+"° "+ str(classifica_globale[i])
+            persona = str(classifica_globale[i])
+            scritta_classifica = str(i+1)+"° "+ persona[3:-1]
             surf_text_globale = fnt_classifica.render(scritta_classifica, True, (0, 0, 0))
             u += 25
             SCHERMO.blit(surf_text_globale, (560, (520+u)))
